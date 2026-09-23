@@ -11,5 +11,6 @@ terraform plan
 terraform apply
 ```
 
-`terraform destroy` must leave the project clean (spec's own "done"
-criterion) — nothing here has `prevent_destroy` or retention locks.
+`terraform destroy` must leave the project clean, so the stack can be torn
+down between sessions at zero cost — nothing here has `prevent_destroy` or
+retention locks.
