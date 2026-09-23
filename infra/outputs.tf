@@ -1,3 +1,16 @@
+output "project_id" {
+  value = var.project_id
+}
+
+output "region" {
+  value = var.region
+}
+
+output "bronze_table" {
+  description = "Beam table spec (project:dataset.table) for the pipeline's --bronze_table."
+  value       = "${var.project_id}:${google_bigquery_dataset.bronze.dataset_id}.${google_bigquery_table.bronze_reviews_raw.table_id}"
+}
+
 output "bucket_name" {
   value = google_storage_bucket.review_pulse.name
 }

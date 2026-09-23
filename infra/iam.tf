@@ -22,6 +22,15 @@ resource "google_pubsub_subscription_iam_member" "dataflow_subscriber" {
   member       = "serviceAccount:${google_service_account.dataflow_runner.email}"
 }
 
+# subscriber can consume but not read the subscription's config (pubsub.subscriptions.get),
+# which Dataflow queries at startup to check ack deadline and unsupported settings.
+resource "google_pubsub_subscription_iam_member" "dataflow_subscription_viewer" {
+  project      = var.project_id
+  subscription = google_pubsub_subscription.reviews_dataflow.name
+  role         = "roles/pubsub.viewer"
+  member       = "serviceAccount:${google_service_account.dataflow_runner.email}"
+}
+
 resource "google_storage_bucket_iam_member" "dataflow_bucket_writer" {
   bucket = google_storage_bucket.review_pulse.name
   role   = "roles/storage.objectAdmin"

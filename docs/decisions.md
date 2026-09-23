@@ -34,6 +34,7 @@ ADRs cortos: decisión, contexto, por qué y alternativas descartadas. Un bloque
 **Decisión:** Terraform crea `bronze`, `silver` y `gold` vacíos, con `delete_contents_on_destroy = true`. Las tablas las crean los scripts SQL.
 **Por qué:** separa la infraestructura (qué datasets existen) del esquema de datos (qué forma tienen las tablas). Cambiar una columna no debería requerir tocar Terraform.
 **Consecuencia:** como las tablas no están en el state de Terraform, sin `delete_contents_on_destroy` el `terraform destroy` fallaría al encontrar un dataset con contenido.
+**Excepción (Fase 2):** `bronze.reviews_raw` sí está en Terraform. Ver "La tabla de aterrizaje vive en Terraform".
 
 ### Subscription sin expiración
 
@@ -111,3 +112,113 @@ ADRs cortos: decisión, contexto, por qué y alternativas descartadas. Un bloque
 
 **Decisión:** por ahora el texto sale de plantillas fijas. El banco de ~500 reseñas generado con Gemini que pide el spec queda pendiente.
 **Por qué:** para generarlo hace falta la API de Vertex AI, que se habilita en la Fase 3. Las plantillas alcanzan para validar el pipeline de streaming. La variedad de texto solo importa cuando entran en juego los embeddings y la búsqueda semántica.
+
+---
+
+## Fase 2 — Pipeline de streaming (`pipelines/dataflow/`)
+
+### Dataflow en lugar de una BigQuery subscription
+
+**Decisión:** un pipeline de Beam en Dataflow lee de Pub/Sub y escribe en BigQuery y GCS.
+**Alternativa descartada:** Pub/Sub ofrece *BigQuery subscriptions*, que escriben directo en una tabla sin código ni workers, y son más baratas y simples.
+**Por qué no:** no permiten reglas de validación propias, no envían los rechazos a una dead-letter con motivo y no escriben la copia cruda en GCS para reprocesar. Si el requisito fuera solo "llevar mensajes a BigQuery", la subscription sería la opción correcta.
+
+### Validación como función pura
+
+**Decisión:** `validate(data, message_id, ingest_ts)` no usa Beam ni hace I/O. Devuelve `("valid", fila)` o `("invalid", rechazo)`. El DoFn solo la envuelve.
+**Por qué:** la lógica que más cambia se testea en milisegundos, sin levantar un runner. Un test de contrato pasa miles de eventos del generador real por esta función y verifica que cada uno termine donde debe y por el motivo correcto.
+
+### Un motivo por rechazo
+
+**Decisión:** los rechazos tienen un único `reason`: `malformed_json`, `not_an_object`, `missing_fields:<campos>`, `invalid_rating`, `invalid_type` o `invalid_event_ts`. Las reglas se evalúan en ese orden y la primera que falla decide el motivo.
+**Por qué:** la dead-letter se puede consultar por causa, y un aumento de un motivo concreto señala un problema concreto en el productor.
+**Detalles:** en Python `True` es un `int`, así que el rating rechaza explícitamente los booleanos. Un timestamp sin zona horaria se rechaza porque es ambiguo.
+
+### `ingest_ts` es el publish time de Pub/Sub
+
+**Decisión:** `ingest_ts` toma el `publish_time` del mensaje, no la hora del reloj del worker.
+**Por qué:** si Pub/Sub reenvía un mensaje, conserva el mismo `ingest_ts`, así que la fila duplicada cae en la misma partición y el MERGE de silver la resuelve sin casos especiales.
+
+### Se guarda el `message_id`
+
+**Decisión:** bronze guarda el `message_id` de Pub/Sub junto a cada fila.
+**Por qué:** distingue los dos orígenes de duplicados. El mismo `review_id` con distinto `message_id` es un reintento del productor. El mismo `message_id` repetido es una reentrega de Pub/Sub.
+
+### Storage Write API en modo at-least-once
+
+**Decisión:** `WriteToBigQuery(method=STORAGE_WRITE_API, use_at_least_once=True)`.
+**Por qué:** el modo exactly-once agrega un shuffle con costo y latencia, y protege contra algo que silver ya resuelve: la deduplicación vive en el MERGE. Pagar dos veces por la misma garantía no tiene sentido.
+**Detalles verificados en el código de Beam 2.76:**
+- En Python no existe `Method.STORAGE_API_AT_LEAST_ONCE`. Ese nombre aparece en la documentación de Java, y en Python se usa el flag `use_at_least_once`.
+- La Storage Write API es un transform cross-language de Java: para construir el pipeline hace falta un JRE. La imagen de la Flex Template tiene que incluirlo.
+- El schema es obligatorio aunque la tabla ya exista, y Beam acepta `INTEGER` pero no `INT64`.
+
+### La tabla de aterrizaje vive en Terraform
+
+**Decisión:** `bronze.reviews_raw` se crea en Terraform con `deletion_protection = false`, particionada por día sobre `ingest_ts` y con `require_partition_filter = true`. El schema está en `pipelines/dataflow/schemas/bronze_reviews_raw.json`, y lo leen tanto Terraform como el pipeline.
+**Por qué:** el job no arranca sin la tabla, y `terraform apply` debe alcanzar para que el stack quede listo para correr. Las tablas derivadas (silver y gold) siguen en `sql/`. Con un solo archivo de schema, Terraform y el pipeline no pueden quedar desalineados.
+**Detalles:** el provider crea las tablas con `deletion_protection = true` por defecto, lo que bloquearía el `destroy`. El filtro de partición obligatorio evita escaneos completos por accidente.
+
+### Copia cruda en ventanas de 5 minutos, con un escritor propio
+
+**Decisión:** los eventos válidos y los rechazados se escriben como JSON Lines en `raw/reviews/dt=YYYY-MM-DD/` y `dead-letter/dt=YYYY-MM-DD/`, con un archivo por ventana fija de 5 minutos y por disparo. El flujo es `WindowInto` → `GroupByKey` → un DoFn que escribe el grupo completo con `FileSystems.create`. El nombre depende solo de la ventana y del *pane*: `reviews-HHMM-p0.jsonl`.
+**Por qué:** es la copia inmutable que permite reprocesar desde cero si cambia la lógica, y el prefijo `dt=` deja los archivos listos para una tabla externa particionada.
+**Alternativa descartada (probada en la nube):** `fileio.WriteToFiles`. En streaming tuvo tres problemas:
+1. Escribió un archivo por bundle: 281 archivos para 305 eventos.
+2. Numera los shards desde 0 en cada grupo de archivos que mueve. Si una ventana genera dos grupos, los dos producen el mismo nombre y uno sobrescribe al otro. La dead-letter perdió así 8 de 10 rechazos, sin ningún error.
+3. Si el rename desde `.temp` falla, solo lo registra en nivel DEBUG.
+
+La conciliación detectó la pérdida: se esperaban 10 rechazos y había 2.
+**Trade-off:** una sola clave hace que cada ventana pase por un único worker. A este volumen no importa. Si el volumen crece, hay que repartir la clave en N valores y agregar el número de shard al nombre del archivo.
+
+### Contadores por resultado de validación
+
+**Decisión:** `ParseAndValidate` incrementa un contador de Beam por resultado (`valid`, `malformed_json`, `invalid_rating`, etc.). Se ven en la consola de Dataflow y en Cloud Monitoring.
+**Por qué:** así se puede conciliar lo que el pipeline clasificó con lo que llegó a cada destino. Con estos contadores, la pérdida en la dead-letter habría sido visible en la consola sin reproducir nada: el contador marcaba 10 rechazos y en GCS había 2.
+
+### Sin prueba end-to-end local
+
+**Decisión:** la lógica se prueba con tests unitarios y con `TestPipeline`, y la integración se prueba directamente en Dataflow.
+**Por qué:** ningún runner local ejecuta este pipeline completo. El DirectRunner de Python no soporta transforms cross-language en streaming, y PrismRunner no soporta la lectura nativa de Pub/Sub. Agregar una opción para usar otro método de escritura en local significaría probar un camino de código que no corre en producción.
+
+### El lanzamiento no espera al job
+
+**Decisión:** con Dataflow, `run()` envía el job y devuelve el control. Solo con runners locales espera a que termine.
+**Por qué:** un job de streaming nunca termina, así que `with beam.Pipeline()` dejaría colgado para siempre el comando de lanzamiento, y también el de la Flex Template.
+
+### Quota project acotado al proceso
+
+**Decisión:** `scripts/run_dataflow.sh` define `GOOGLE_CLOUD_QUOTA_PROJECT` con el proyecto de Terraform.
+**Por qué:** las credenciales ADC de un usuario pueden tener otro proyecto como quota project. Entonces las llamadas se atribuyen a ese proyecto, y fallan con 403 si ahí la API no está habilitada. Cambiarlo con `gcloud auth application-default set-quota-project` afectaría a todo lo demás que use esas credenciales. La variable de entorno lo resuelve solo para este proceso.
+
+### Todo lo que se enciende tiene cómo apagarse
+
+**Decisión:** `scripts/stop.sh` hace drain de los jobs activos y espera a que se detengan. `scripts/down.sh` los cancela y después ejecuta `terraform destroy`.
+**Por qué:** Terraform no administra el job de Dataflow, así que un `destroy` solo dejaría el job corriendo y cobrando. El drain termina de procesar lo que está en vuelo y conviene para cerrar una sesión. El cancel detiene todo de inmediato y conviene antes de destruir la infraestructura.
+
+### Workers `e2-standard-2`
+
+**Decisión:** `--worker_machine_type=e2-standard-2`, en lugar del tipo por defecto de Dataflow (familia n1).
+**Por qué:** el primer lanzamiento falló con `ZONE_RESOURCE_POOL_EXHAUSTED`: `us-central1-a` no tenía capacidad para el tipo pedido, Dataflow reintentó 5 minutos y marcó el job como fallido. La familia e2 suele tener mejor disponibilidad y además es más barata. Para un worker que procesa decenas de eventos por minuto no hace falta más.
+
+### `pubsub.viewer` sobre la subscription
+
+**Decisión:** la service account de Dataflow tiene `roles/pubsub.viewer` sobre la subscription, además de `roles/pubsub.subscriber`.
+**Por qué:** `subscriber` permite consumir mensajes, pero no incluye `pubsub.subscriptions.get`. Dataflow lee la configuración de la subscription al arrancar para validar el ack deadline y detectar opciones que no soporta. Sin ese permiso, el job igual arranca pero lo registra como advertencia. El permiso se otorga sobre la subscription y no sobre el proyecto, para mantener el mínimo privilegio.
+
+### Los tests usan los tipos reales de producción
+
+**Decisión:** el test del DoFn arma el `PubsubMessage` con `publish_time` de tipo `DatetimeWithNanoseconds`, que es lo que Dataflow entrega realmente.
+**Por qué:** la primera versión usaba un `Timestamp` de Beam. El test pasó, pero en Dataflow cada evento falló con `'DatetimeWithNanoseconds' object has no attribute 'to_utc_datetime'`. Un test cuyos datos no tienen la forma de los de producción da una confianza falsa. Además, en streaming Dataflow reintenta indefinidamente los elementos que fallan: el job sigue en verde (`Running`) sin escribir nada, y los mensajes se quedan en Pub/Sub porque nunca se confirman. No se pierden datos, pero un job "verde" no garantiza que esté funcionando.
+**Segundo caso:** el paso `Convert dict to Beam Row` de la Storage Write API no convierte `datetime` a `Timestamp` de Beam, y falló en Dataflow con `'datetime.datetime' object has no attribute 'micros'`. Ahora `to_bq_row` hace esa conversión justo antes de escribir, y hay un test que ejecuta en local ese mismo transform (`StorageWriteToBigQuery.ConvertToBeamRows`) sin tocar BigQuery. La regla que dejan los dos casos: cuando algo falla en la nube, primero se reproduce en local con el mismo transform, y recién después se corrige.
+
+### Retrospectiva: qué se haría distinto
+
+- **Primero un esqueleto que camine.** El pipeline se escribió completo antes de desplegarlo, así que en la nube aparecieron cinco problemas encadenados: quota project, stockout, un permiso faltante y dos errores de tipos. Un pipeline mínimo (Pub/Sub → BigQuery) desplegado al principio habría expuesto los problemas de infraestructura con mucho menos código en juego.
+- **A este volumen, ELT sería más simple.** Una BigQuery subscription guarda todo crudo en bronze, incluidos los mensajes inválidos, y la validación se hace en SQL, con una tabla de cuarentena donde cada rechazo lleva su motivo. No hay workers, Java ni costo por hora. Dataflow se justifica con transformaciones por evento con estado, enriquecimientos complejos o mucho volumen; aquí se usa porque el objetivo del proyecto incluye dominarlo.
+- **Validar al publicar.** Un schema de Pub/Sub (Avro o Protobuf) asociado al topic rechaza en el momento los mensajes mal formados, y en producción es la primera barrera. Aquí se omite a propósito, para que los errores lleguen a la dead-letter y se pueda demostrar ese camino.
+- **Observabilidad desde el primer día.** Con los contadores por resultado desde el primer despliegue, la pérdida en la dead-letter habría sido visible en la consola sin tener que investigarla.
+
+### Pendiente para la Fase 3: la carrera del watermark
+
+El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el último watermark procesado. Pero `ingest_ts` es el publish time, y la fila recién se puede consultar unos segundos después, cuando la Storage Write API la confirma. Si el MERGE corre justo en ese intervalo, avanza el watermark y la fila queda atrás para siempre. La solución es releer con solapamiento (`ingest_ts > watermark - 15 minutos`), lo que es seguro porque el MERGE es idempotente.
