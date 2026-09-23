@@ -13,7 +13,7 @@ Para responderlas, el agente cruza la métrica (SQL sobre BigQuery) con las rese
 | Fase | Alcance | Estado |
 |---|---|---|
 | 1. Base | Infraestructura con Terraform y generador de eventos | ✅ Desplegada y verificada |
-| 2. Streaming | Pipeline de Dataflow: validación, bronze, GCS y dead-letter | 🚧 En curso |
+| 2. Streaming | Pipeline de Dataflow: validación, bronze, GCS y dead-letter | 🚧 Verificado en Dataflow; falta la Flex Template |
 | 3. Capas y LLM | MERGE a silver, enriquecimiento con Gemini, embeddings y gold | Pendiente |
 | 4. Agente | API en Cloud Run con function calling | Pendiente |
 | 5. CI y demo | GitHub Actions y demo del escenario de incidente | Pendiente |
@@ -67,10 +67,33 @@ python generator/publish.py --project <PROJECT_ID> --rate 20 --duration 10
 python generator/publish.py --project <PROJECT_ID> --incident-start 2 --incident-minutes 5
 
 # 3. Tests
+pip install -r pipelines/dataflow/requirements.txt
 python tests/test_generator.py
+python tests/test_pipeline.py
+
+# 4. Pipeline en Dataflow (requiere Java: la escritura a BigQuery es cross-language)
+bash scripts/run_dataflow.sh      # toma toda la configuración de `terraform output`
+bash scripts/stop.sh              # drain del job; --cancel para detenerlo de inmediato
+bash scripts/down.sh              # cancela los jobs y ejecuta terraform destroy
 ```
 
 El generador inyecta a propósito casos que el pipeline debe manejar: JSON mal formado, eventos que rompen reglas de validación, duplicados exactos, eventos que llegan con horas de retraso y un incidente de reseñas negativas sobre conectividad para un producto.
+
+### Validación de punta a punta
+
+El generador es determinista: con la misma semilla produce siempre los mismos eventos, así que el resultado correcto se conoce antes de correr. `scripts/reconcile.py` lo calcula y lo compara con tres mediciones independientes: los contadores de Dataflow, lo que llegó a bronze y a `raw/`, y la dead-letter agrupada por motivo.
+
+```
+outcome             expected  counters    landed
+valid                    288       288       288
+malformed_json             4         4         4
+missing_fields             3         3         3
+invalid_rating             4         4         4
+invalid_event_ts           1         1         1
+
+raw/ lines 288 vs bronze rows 288
+RECONCILED
+```
 
 ## Costos
 
@@ -79,8 +102,12 @@ Sin procesos corriendo, la infraestructura cuesta prácticamente cero. El costo 
 ## Estructura
 
 ```
-infra/         Terraform: APIs, bucket, Pub/Sub, datasets, IAM y presupuesto
-generator/     Publicador de reseñas sintéticas y catálogo de productos
-tests/         Tests del generador
-docs/          Decisiones de diseño (ADRs)
+infra/                Terraform: APIs, bucket, Pub/Sub, datasets, tabla bronze, IAM y presupuesto
+generator/            Publicador de reseñas sintéticas y catálogo de productos
+pipelines/dataflow/   Pipeline de streaming (Apache Beam) y schema de bronze
+scripts/              Lanzar, detener, desmontar y conciliar
+tests/                Tests del generador y del pipeline
+docs/                 Decisiones de diseño (ADRs) y guía paso a paso
 ```
+
+Para entender cada pieza y reconstruir el sistema a mano, sin Terraform, está la [guía paso a paso](docs/guia/README.md).
