@@ -137,6 +137,7 @@ Si las tres coinciden con lo esperado, número por número, no se perdió ni se 
 - `--since`: un instante UTC justo **antes** de empezar a publicar, para contar solo las filas de esta corrida.
 - Lo que va después de `--` son los mismos argumentos que se le pasaron al generador.
 - Los contadores son por job: conviene publicar una sola tanda por job para que sean comparables.
+- `--bq-subscription` agrega una cuarta columna con la clasificación del camino ELT alternativo (ver capítulo 05).
 
 **Resultado real** (semilla 31, 300 eventos, job `2026-09-23_11_50_25-18342198976324619151`):
 

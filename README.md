@@ -95,6 +95,8 @@ raw/ lines 288 vs bronze rows 288
 RECONCILED
 ```
 
+Un segundo camino corre en paralelo como experimento: una BigQuery subscription escribe cada mensaje crudo en BigQuery y una vista SQL aplica las mismas reglas. Con la misma publicación, los dos caminos clasificaron igual. La comparación de exactitud, latencia, costo y código está en [`docs/guia/05-alternativas.md`](docs/guia/05-alternativas.md).
+
 ## Costos
 
 Sin procesos corriendo, la infraestructura cuesta prácticamente cero. El costo principal es Dataflow mientras procesa datos (del orden de USD 0,25–0,40 por hora con un worker), por eso se ejecuta solo durante las sesiones de prueba. `terraform destroy` deja el proyecto limpio y `terraform apply` lo vuelve a levantar. Una alerta de presupuesto opcional (`billing_account` en `terraform.tfvars`) avisa al 50%, 90% y 100% del monto definido.
@@ -106,6 +108,7 @@ infra/                Terraform: APIs, bucket, Pub/Sub, datasets, tabla bronze, 
 generator/            Publicador de reseñas sintéticas y catálogo de productos
 pipelines/dataflow/   Pipeline de streaming (Apache Beam) y schema de bronze
 scripts/              Lanzar, detener, desmontar y conciliar
+sql/experiments/      Validación en SQL del camino alternativo (BigQuery subscription)
 tests/                Tests del generador y del pipeline
 docs/                 Decisiones de diseño (ADRs) y guía paso a paso
 ```

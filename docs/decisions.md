@@ -219,6 +219,17 @@ La conciliación detectó la pérdida: se esperaban 10 rechazos y había 2.
 - **Validar al publicar.** Un schema de Pub/Sub (Avro o Protobuf) asociado al topic rechaza en el momento los mensajes mal formados, y en producción es la primera barrera. Aquí se omite a propósito, para que los errores lleguen a la dead-letter y se pueda demostrar ese camino.
 - **Observabilidad desde el primer día.** Con los contadores por resultado desde el primer despliegue, la pérdida en la dead-letter habría sido visible en la consola sin tener que investigarla.
 
+### Experimento: BigQuery subscription en paralelo
+
+**Decisión:** mantener, junto al pipeline de Dataflow, una segunda subscription (`reviews-bigquery-sub`) que escribe cada mensaje crudo en `bronze.reviews_raw_bqsub`, con una vista SQL (`bronze.reviews_bqsub_classified`) que aplica las mismas reglas de validación. Todo el experimento vive en `infra/experiment_bq_subscription.tf`.
+**Por qué:** para medir con los mismos mensajes el camino ELT, que la retrospectiva señaló como más simple a este volumen, en lugar de solo argumentarlo.
+**Resultado (semilla 47, 300 eventos):** las cuatro mediciones coinciden (289 válidos y 11 rechazos, iguales por motivo). Al terminar de publicar, la subscription ya tenía las 300 filas; Dataflow todavía estaba consiguiendo una VM, tras un stockout. El detalle está en la guía, capítulo 05.
+**Lo que se aprendió:**
+- A este volumen, ELT tiene la misma exactitud con mucho menos código, sin costo por hora y sin arranque en frío.
+- Su punto débil es la **paridad de reglas.** `SAFE_CAST` acepta timestamps sin zona horaria y la regla en Python no; sin una expresión regular extra, los dos caminos habrían diferido en silencio. Duplicar la lógica de validación exige una prueba explícita de paridad.
+- **Mínimo privilegio:** el service agent de Pub/Sub tiene `dataEditor` solo sobre la tabla del experimento, no sobre el dataset.
+- **`data` es STRING y no JSON**, para que los mensajes mal formados también aterricen y los clasifique SQL, en lugar de que BigQuery los rechace.
+
 ### Pendiente para la Fase 3: la carrera del watermark
 
 El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el último watermark procesado. Pero `ingest_ts` es el publish time, y la fila recién se puede consultar unos segundos después, cuando la Storage Write API la confirma. Si el MERGE corre justo en ese intervalo, avanza el watermark y la fila queda atrás para siempre. La solución es releer con solapamiento (`ingest_ts > watermark - 15 minutos`), lo que es seguro porque el MERGE es idempotente.

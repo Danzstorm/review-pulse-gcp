@@ -77,6 +77,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--since", required=True, help="UTC ISO timestamp just before publishing started")
     parser.add_argument("--job", required=True, help="Dataflow job id")
+    parser.add_argument("--bq-subscription", action="store_true",
+                        help="also compare the ELT experiment (bronze.reviews_bqsub_classified)")
     parser.add_argument("generator_args", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     since = datetime.fromisoformat(args.since.replace("Z", "+00:00"))
@@ -100,15 +102,20 @@ def main():
     raw_lines = sum(1 for _ in gcs_records(bucket, "raw/reviews/", since))
     dead_letter = Counter(r["reason"].split(":")[0] for r in gcs_records(bucket, "dead-letter/", since))
 
-    landed = Counter(dead_letter, valid=bronze_rows)
+    columns = {"expected": expected, "counters": counters, "landed": Counter(dead_letter, valid=bronze_rows)}
+    if args.bq_subscription:
+        elt = ("SELECT SPLIT(outcome, ':')[OFFSET(0)] AS outcome, COUNT(*) AS n "
+               "FROM bronze.reviews_bqsub_classified WHERE ingest_ts >= @since GROUP BY 1")
+        columns["bq_sub_sql"] = Counter({r.outcome: r.n for r in bq.query(elt, job_config=config).result()})
+
     ok = True
-    print(f"{'outcome':<18}{'expected':>10}{'counters':>10}{'landed':>10}")
+    print(f"{'outcome':<18}" + "".join(f"{c:>12}" for c in columns))
     for name in OUTCOMES:
-        row = (expected[name], counters[name], landed[name])
+        row = [col[name] for col in columns.values()]
         if any(row):
             mark = "" if len(set(row)) == 1 else "  <-- MISMATCH"
             ok &= not mark
-            print(f"{name:<18}{row[0]:>10}{row[1]:>10}{row[2]:>10}{mark}")
+            print(f"{name:<18}" + "".join(f"{v:>12}" for v in row) + mark)
     raw_mark = "" if raw_lines == bronze_rows else "  <-- MISMATCH"
     ok &= not raw_mark
     print(f"\nraw/ lines {raw_lines} vs bronze rows {bronze_rows}{raw_mark}")
