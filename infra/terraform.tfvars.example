@@ -1,0 +1,5 @@
+project_id = "my-gcp-project-id"
+# billing_account = "XXXXXX-XXXXXX-XXXXXX" # enables the budget alert
+# budget_amount   = 20                     # in the billing account's currency
+# region          = "us-central1"
+# name_prefix     = "review-pulse"
