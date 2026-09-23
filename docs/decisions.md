@@ -61,3 +61,53 @@ ADRs cortos: decisión, contexto, por qué y alternativas descartadas. Un bloque
 **Decisión:** state local, sin un bucket de GCS como backend.
 **Por qué:** lo mantiene una sola persona y no hay aplicaciones concurrentes que requieran state compartido con locking.
 **Revisar si:** más de una persona empieza a aplicar cambios o Terraform se ejecuta desde CI.
+
+---
+
+## Fase 1 — Generador de eventos (`generator/`)
+
+### Un solo catálogo para el generador y para `silver.products`
+
+**Decisión:** `generator/products.csv` es la fuente de los `product_id` que publica el generador y también el archivo que se sube a `seed/` para crear `silver.products`.
+**Por qué:** con dos listas separadas, tarde o temprano aparecen reseñas de productos que no existen en el catálogo, y el join con `products` las perdería sin avisar.
+
+### El generador no envía el topic ni el sentimiento
+
+**Decisión:** el evento solo trae `rating`, `title` y `body`. El topic y el sentimiento se usan internamente para elegir la plantilla, pero no se publican.
+**Por qué:** en un sistema real el cliente no clasifica su propia reseña. Si el evento trajera la respuesta, el enriquecimiento con Gemini no tendría nada que demostrar.
+
+### Inválidos que rompen exactamente una regla
+
+**Decisión:** cada evento inválido rompe una sola regla: JSON mal formado (un mensaje cortado a mitad de camino), rating fuera de rango, un campo obligatorio ausente o un timestamp que no se puede parsear.
+**Por qué:** así el motivo que registra la dead-letter es inequívoco y se puede verificar que cada tipo de error se detecta. El JSON mal formado es necesario porque el pipeline tiene dos puntos donde un evento puede fallar, el parseo y la validación, y cada uno debe recibir datos que lo pongan a prueba.
+
+### Eventos que llegan tarde
+
+**Decisión:** un 5% de los eventos trae un `event_ts` de entre 30 minutos y 6 horas atrás.
+**Por qué:** en un sistema real, el momento en que ocurre un evento y el momento en que se ingiere no coinciden. Un celular sin conexión, por ejemplo, envía su reseña horas después. Con estos eventos, la decisión de particionar bronze por `ingest_ts` y silver por `event_ts` tiene efectos visibles: una reseña tardía puede caer en la partición de ayer en silver aunque haya entrado hoy en bronze.
+
+### Duplicados como copia exacta
+
+**Decisión:** un duplicado es la misma reseña reenviada, con el mismo `review_id` y el mismo contenido.
+**Por qué:** así se ve el reintento de un productor, que es la causa real de duplicados en Pub/Sub (entrega at-least-once). La deduplicación ocurre en silver con MERGE, no en el generador ni en Dataflow.
+
+### Tiempo lógico para la ventana del incidente
+
+**Decisión:** el minuto en que cae cada evento se calcula como `i / rate`, no con el reloj del sistema.
+**Por qué:** la ventana del incidente queda determinista. Con `--seed`, la misma ejecución produce siempre los mismos eventos, lo que permite testear el escenario sin esperar minutos reales.
+
+### Modo `--dry-run`
+
+**Decisión:** `--dry-run` escribe los eventos en stdout en lugar de publicarlos, y el SDK de Pub/Sub se importa solo cuando se publica de verdad.
+**Por qué:** permite revisar y testear el generador sin un proyecto de GCP ni credenciales. Los bytes se escriben directo a `stdout.buffer` para que la consola de Windows no vuelva a codificar el UTF-8.
+
+### Publicación síncrona
+
+**Decisión:** cada `publish()` espera su confirmación antes de enviar el siguiente evento.
+**Por qué:** a la tasa de la demo (unos 20 eventos por minuto) la latencia no importa, y un error aparece en el evento exacto que lo causó.
+**Revisar si:** la tasa sube a miles de eventos por minuto. En ese caso conviene acumular los futures y esperarlos por lotes.
+
+### Banco de reseñas con Gemini, pendiente para la Fase 3
+
+**Decisión:** por ahora el texto sale de plantillas fijas. El banco de ~500 reseñas generado con Gemini que pide el spec queda pendiente.
+**Por qué:** para generarlo hace falta la API de Vertex AI, que se habilita en la Fase 3. Las plantillas alcanzan para validar el pipeline de streaming. La variedad de texto solo importa cuando entran en juego los embeddings y la búsqueda semántica.

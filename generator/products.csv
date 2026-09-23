@@ -1,0 +1,31 @@
+product_id,name,category,brand
+P-0001,Audífonos inalámbricos SoundPods,audio,Nordika
+P-0002,Audífonos de diadema BassMax,audio,Nordika
+P-0003,Parlante portátil Boom Mini,audio,Kalden
+P-0004,Barra de sonido CineBar 2.1,audio,Kalden
+P-0005,Audífonos deportivos RunFit,audio,Velto
+P-0006,Reloj inteligente Pulse S,wearables,Velto
+P-0007,Pulsera de actividad FitBand 3,wearables,Velto
+P-0008,Reloj inteligente Pulse Pro,wearables,Velto
+P-0009,Anillo inteligente Loop,wearables,Orbe
+P-0010,Cargador rápido 65W,accesorios,Voltix
+P-0011,Batería portátil 20000mAh,accesorios,Voltix
+P-0012,Cable USB-C trenzado 2m,accesorios,Voltix
+P-0013,Base de carga inalámbrica Trio,accesorios,Orbe
+P-0014,Funda protectora ArmorCase,accesorios,Kalden
+P-0015,Teclado mecánico TypeOne,computación,Tekla
+P-0016,Mouse ergonómico Glide,computación,Tekla
+P-0017,Monitor 27 pulgadas ViewPro,computación,Tekla
+P-0018,Webcam HD StreamCam,computación,Orbe
+P-0019,Hub USB-C 7 en 1,computación,Voltix
+P-0020,Disco SSD externo 1TB,computación,Tekla
+P-0021,Aspiradora robot CleanBot,hogar,Casanova
+P-0022,Cafetera de cápsulas Aroma,hogar,Casanova
+P-0023,Freidora de aire CrispAir,hogar,Casanova
+P-0024,Hervidor eléctrico Hervi,hogar,Casanova
+P-0025,Lámpara inteligente Lumi,hogar,Orbe
+P-0026,Cámara de seguridad SafeCam,hogar,Orbe
+P-0027,Tablet 10 pulgadas Tabi,tablets,Nordika
+P-0028,Lector de libros Leafy,tablets,Nordika
+P-0029,Control de juegos ProPad,gaming,Kalden
+P-0030,Audífonos gamer HeadShot,gaming,Kalden
