@@ -21,12 +21,12 @@ flowchart LR
     BR -->|MERGE sin duplicados| SR
     CSV[products.csv] -->|bq load| SP
     SR -->|Gemini| GE
-    GE -.-> GV
-    GE -.-> GM
-    SP -.-> GM
+    GE -->|embeddings| GV
+    GE -->|agregación diaria| GM
+    SP -.->|nombre del producto| GM
 ```
 
-Línea continua: ya construido. Línea punteada: pendiente.
+Línea continua: flujo de datos. Línea punteada: uso futuro.
 
 | Capa | Pregunta que responde | Garantía |
 |---|---|---|
@@ -143,4 +143,110 @@ FROM gold.reviews_enriched GROUP BY topic ORDER BY topic;   -- solo nueve valore
 
 SELECT COUNT(*) FROM gold.reviews_enriched
 WHERE (rating >= 4 AND sentiment = 'negative') OR (rating <= 2 AND sentiment = 'positive');  -- 0
+```
+
+---
+
+## Gold: embeddings y búsqueda por significado
+
+Una búsqueda por palabras encuentra "se desconectan" solo si la reseña dice "se desconectan". Un **embedding** busca por significado.
+
+### Qué es un embedding
+
+Un modelo de lenguaje convierte un texto en una lista de números (aquí, 768). Es como una coordenada en un mapa muy grande: textos con significado parecido quedan cerca, aunque no compartan palabras.
+
+```mermaid
+flowchart LR
+    T1["Se desconectan solos, pierde conexión"] --> M[[modelo de embeddings]]
+    T2["Los audífonos se cortan del celular"] --> M
+    T3["Llegó rápido y bien empacado"] --> M
+    M --> V1["0.12, -0.40, 0.88, … (768 números)"]
+    M --> V2["0.10, -0.38, 0.85, …"]
+    M --> V3["-0.70, 0.22, 0.05, …"]
+    V1 -. cerca .- V2
+    V1 -. lejos .- V3
+```
+
+La "cercanía" se mide con **distancia coseno**: compara hacia dónde apunta cada vector. 0 es idéntico y los valores mayores son más distintos. En la búsqueda de ejemplo, la pregunta "los audífonos se desconectan solos del celular" quedó a 0,097 de una reseña que dice "pierde conexión y hay que emparejarlo de nuevo".
+
+### Cómo se generan
+
+```mermaid
+flowchart LR
+    E[(gold.reviews_enriched)] -->|"solo las que faltan<br/>título + cuerpo"| G[ML.GENERATE_EMBEDDING]
+    G -->|"modelo remoto gold.embedder<br/>conexión de Vertex AI"| API{{gemini-embedding-001}}
+    API --> G
+    G -->|"768 números por reseña"| V[(gold.review_embeddings)]
+```
+
+1. `sql/enrichment/embedding_model.sql` crea el modelo remoto `gold.embedder`, que usa la misma conexión que Gemini.
+2. `sql/enrichment/review_embeddings.sql` toma las reseñas enriquecidas que aún no tienen vector, concatena `título. cuerpo` y llama a `ML.GENERATE_EMBEDDING`.
+3. Guarda el vector en una columna `ARRAY<FLOAT64>`, junto con el tema y el sentimiento, para poder filtrar después.
+
+Tres opciones que importan:
+
+| Opción | Valor | Por qué |
+|---|---|---|
+| `output_dimensionality` | 768 | El modelo entrega 3.072 por defecto; 768 ocupa 4 veces menos y compara más rápido |
+| `task_type` | `SEMANTIC_SIMILARITY` | Le dice al modelo para qué se usarán los vectores |
+| `flatten_json_output` | `TRUE` | Devuelve el vector como una columna normal |
+
+### Cómo se busca
+
+```mermaid
+flowchart LR
+    Q["Pregunta del usuario"] -->|"mismo modelo,<br/>mismas opciones"| QV[vector de la pregunta]
+    QV --> VS[VECTOR_SEARCH<br/>distancia coseno]
+    R[(gold.review_embeddings)] --> VS
+    VS --> TOP["las 5 reseñas más cercanas"]
+```
+
+```bash
+bash scripts/run_sql.sh sql/enrichment/embedding_model.sql
+ENRICH_LIMIT=1200 bash scripts/run_sql.sh sql/enrichment/review_embeddings.sql
+bash scripts/run_sql.sh sql/gold/search_reviews.sql
+```
+
+La pregunta **debe** convertirse con el mismo modelo y las mismas opciones que las reseñas. Vectores de modelos o dimensiones distintas no son comparables.
+
+**Sin índice, a propósito.** `CREATE VECTOR INDEX` exige al menos 5.000 filas y aquí hay 1.132. `VECTOR_SEARCH` sin índice compara contra todas las filas: es exacto y a este tamaño tarda segundos. Con más volumen se agrega el índice, que es aproximado pero mucho más rápido.
+
+**Una limitación honesta:** los datos son sintéticos y salen de plantillas, así que los primeros resultados son la misma frase repetida. La búsqueda funciona, pero con reseñas más variadas la demostración sería más convincente (banco de reseñas con Gemini, pendiente desde la Fase 1).
+
+---
+
+## Gold: métricas diarias por producto
+
+`sql/gold/product_daily_metrics.sql` agrega `gold.reviews_enriched` por día y producto. Es la tabla que consultará la herramienta `get_metrics` del agente.
+
+| Columna | Qué es |
+|---|---|
+| `metric_date`, `product_id` | La clave |
+| `n_reviews`, `avg_rating` | Volumen y calificación media |
+| `n_negative`, `share_negative` | Cuántas reseñas negativas y qué proporción |
+| `top_negative_topic` | El tema que concentra más reseñas negativas ese día |
+
+```bash
+bash scripts/run_sql.sh sql/gold/product_daily_metrics.sql
+```
+
+El incidente sembrado se ve en una consulta:
+
+```sql
+SELECT * FROM gold.product_daily_metrics ORDER BY share_negative DESC LIMIT 3;
+-- P-0001 · 273 reseñas · promedio 1,65 · 95 % negativas · tema: connectivity
+```
+
+Las dos herramientas del agente responden preguntas distintas: **la métrica** (la calificación de P-0001 se desploma) y **la causa** (la búsqueda vectorial devuelve las reseñas de conectividad que la explican).
+
+```mermaid
+flowchart TB
+    subgraph gold
+        M[(product_daily_metrics<br/>QUÉ pasó)]
+        V[(review_embeddings<br/>POR QUÉ pasó)]
+    end
+    A["¿Por qué bajó la calificación<br/>de los audífonos?"] --> T1[get_metrics] --> M
+    A --> T2[search_reviews] --> V
+    M --> R[respuesta del agente]
+    V --> R
 ```

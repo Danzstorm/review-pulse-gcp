@@ -279,3 +279,13 @@ El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el ú
 **Lo que se aprendió:**
 - **Probar un prompt en 30 filas antes de procesar todo.** Reprocesar 1.132 reseñas tarda unos 5 minutos y cuesta centavos; una prueba de 30 filas tarda segundos y habría detectado el problema antes.
 - La creación del modelo falló con "no tiene permiso para usar el endpoint" aunque el rol ya estaba asignado. Era propagación de IAM: el segundo intento, un par de minutos después, funcionó sin cambios. El mismo error aparece si falta el rol, así que primero se verifica la política y después se reintenta antes de investigar otra causa.
+
+### Embeddings: 768 dimensiones, búsqueda exacta y métricas reconstruidas
+
+**Decisión:** los embeddings se generan en BigQuery con un modelo remoto (`gold.embedder`, endpoint `gemini-embedding-001`) sobre `título + cuerpo`, con 768 dimensiones, y se guardan de forma incremental en `gold.review_embeddings`. La búsqueda usa `VECTOR_SEARCH` sin índice. `gold.product_daily_metrics` se reconstruye entera en cada corrida.
+**Por qué:**
+- **768 y no 3.072 (el valor por defecto):** una cuarta parte del almacenamiento y de la comparación por consulta, con poca pérdida para reseñas cortas.
+- **Sin índice vectorial todavía:** `CREATE VECTOR INDEX` exige al menos 5.000 filas y hay 1.132 (BigQuery lo rechaza con ese mensaje). `VECTOR_SEARCH` compara contra todas las filas, que es exacto y rápido a este tamaño. El índice (aproximado) se justifica con más volumen.
+- **Mismo modelo y mismas opciones al preguntar y al indexar:** la pregunta del usuario se convierte en vector con `gold.embedder`, 768 dimensiones y `SEMANTIC_SIMILARITY`. Si cambia cualquiera de los tres, los vectores dejan de ser comparables.
+- **Métricas con reconstrucción completa:** es una agregación pura; reconstruirla no puede desviarse y es más simple que un MERGE incremental.
+**Lo que se aprendió:** los datos sintéticos salen de plantillas, así que los primeros resultados de una búsqueda son la misma frase con distinto `review_id`. La búsqueda funciona, pero el banco de reseñas con variedad real (pendiente desde la Fase 1) es lo que haría la demostración convincente.
