@@ -11,6 +11,18 @@ output "bronze_table" {
   value       = "${var.project_id}:${google_bigquery_dataset.bronze.dataset_id}.${google_bigquery_table.bronze_reviews_raw.table_id}"
 }
 
+output "template_image" {
+  value = "${google_artifact_registry_repository.images.location}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images.repository_id}/pipeline"
+}
+
+output "builds_bucket" {
+  value = google_storage_bucket.builds.name
+}
+
+output "builder_email" {
+  value = google_service_account.builder.email
+}
+
 output "bucket_name" {
   value = google_storage_bucket.review_pulse.name
 }

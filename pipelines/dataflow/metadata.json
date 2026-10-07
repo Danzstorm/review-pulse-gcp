@@ -1,0 +1,24 @@
+{
+  "name": "Review Pulse streaming pipeline",
+  "description": "Validates reviews from Pub/Sub; writes valid rows to BigQuery bronze and 5-minute raw files to GCS, rejects to a dead-letter prefix with their reason.",
+  "parameters": [
+    {
+      "name": "input_subscription",
+      "label": "Pub/Sub subscription",
+      "helpText": "projects/<project>/subscriptions/<subscription>",
+      "regexes": ["^projects/[^/]+/subscriptions/[^/]+$"]
+    },
+    {
+      "name": "bronze_table",
+      "label": "Bronze table",
+      "helpText": "<project>:bronze.reviews_raw",
+      "regexes": ["^[^:]+:[^.]+\\.[^.]+$"]
+    },
+    {
+      "name": "bucket",
+      "label": "GCS bucket",
+      "helpText": "Bucket name for raw/ and dead-letter/, without gs://",
+      "regexes": ["^[a-z0-9][a-z0-9._-]+$"]
+    }
+  ]
+}

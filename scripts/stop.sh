@@ -8,7 +8,11 @@ REGION=$(terraform -chdir="$ROOT/infra" output -raw region)
 ACTION=drain
 [[ "${1:-}" == "--cancel" ]] && ACTION=cancel
 
-active() { gcloud dataflow jobs list --project="$PROJECT" --region="$REGION" --status=active --format="value(id)"; }
+# Not --status=active: it misses Queued jobs, e.g. a Flex Template whose launcher VM is still up.
+active() {
+  gcloud dataflow jobs list --project="$PROJECT" --region="$REGION" --status=all \
+    --filter="NOT state:(Done Failed Cancelled Drained Updated)" --format="value(id)"
+}
 
 JOBS=$(active)
 if [[ -z "$JOBS" ]]; then
