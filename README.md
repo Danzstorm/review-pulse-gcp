@@ -14,7 +14,7 @@ Para responderlas, el agente cruza la métrica (SQL sobre BigQuery) con las rese
 |---|---|---|
 | 1. Base | Infraestructura con Terraform y generador de eventos | ✅ Desplegada y verificada |
 | 2. Streaming | Pipeline de Dataflow: validación, bronze, GCS y dead-letter | ✅ Verificada de punta a punta, lanzada desde una Flex Template |
-| 3. Capas y LLM | MERGE a silver, enriquecimiento con Gemini, embeddings y gold | 🚧 Silver listo; faltan Gemini, embeddings y gold |
+| 3. Capas y LLM | MERGE a silver, enriquecimiento con Gemini, embeddings y gold | 🚧 Silver y enriquecimiento con Gemini listos; faltan embeddings y métricas gold |
 | 4. Agente | API en Cloud Run con function calling | Pendiente |
 | 5. CI y demo | GitHub Actions y demo del escenario de incidente | Pendiente |
 
@@ -110,6 +110,7 @@ generator/            Publicador de reseñas sintéticas y catálogo de producto
 pipelines/dataflow/   Pipeline de streaming (Apache Beam), schema de bronze y Dockerfile de la Flex Template
 scripts/              Construir la template, lanzar, detener, desmontar y conciliar
 sql/silver/           MERGE de bronze a silver (deduplicación)
+sql/enrichment/       Modelo remoto de Gemini y enriquecimiento (sentimiento, tema, resumen)
 sql/experiments/      Validación en SQL del camino alternativo (BigQuery subscription)
 tests/                Tests del generador y del pipeline
 docs/                 Decisiones de diseño (ADRs) y guía paso a paso

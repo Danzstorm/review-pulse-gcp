@@ -20,7 +20,7 @@ flowchart LR
     end
     BR -->|MERGE sin duplicados| SR
     CSV[products.csv] -->|bq load| SP
-    SR -.->|paso siguiente| GE
+    SR -->|Gemini| GE
     GE -.-> GV
     GE -.-> GM
     SP -.-> GM
@@ -89,3 +89,58 @@ flowchart LR
 ```
 
 Bronze se ordena por *cuándo llegó* y silver por *cuándo ocurrió*. Una reseña que llega hoy con `event_ts` de hace horas queda en la partición de su fecha real. Las consultas por fecha de reseña leen solo lo necesario.
+
+---
+
+## Gold: enriquecer con Gemini
+
+Las reseñas de silver tienen texto libre. Para responder "¿por qué bajó la calificación?" hacen falta tres datos estructurados por reseña: **sentimiento**, **tema** y **resumen**. Gemini los produce sin salir de BigQuery.
+
+```mermaid
+flowchart LR
+    S[(silver.reviews)] -->|"solo las que faltan<br/>LEFT JOIN + LIMIT"| P[prompt por reseña]
+    P -->|AI.GENERATE_TABLE| M[[modelo remoto<br/>gold.gemini]]
+    M -->|"conexión BigQuery<br/>roles/aiplatform.user"| V{{Gemini en Vertex AI}}
+    V --> M
+    M --> F{¿respuesta válida?<br/>sentimiento y tema en la lista}
+    F -->|sí| G[(gold.reviews_enriched)]
+    F -->|no| R[no se guarda:<br/>se reintenta en la próxima corrida]
+```
+
+### Piezas
+
+| Pieza | Dónde | Para qué |
+|---|---|---|
+| Conexión de BigQuery | `infra/enrichment.tf` | La identidad con la que BigQuery llama a Vertex AI |
+| Rol `aiplatform.user` | `infra/enrichment.tf` | Permiso de esa identidad para usar Gemini |
+| Modelo remoto `gold.gemini` | `sql/enrichment/model.sql` | Un nombre dentro de BigQuery que apunta al endpoint de Gemini |
+| Consulta de enriquecimiento | `sql/enrichment/reviews_enriched.sql` | Arma el prompt, llama al modelo, valida y guarda |
+
+```bash
+terraform -chdir=infra apply                       # conexión + permiso
+bash scripts/run_sql.sh sql/enrichment/model.sql   # modelo remoto
+ENRICH_LIMIT=1200 bash scripts/run_sql.sh sql/enrichment/reviews_enriched.sql
+```
+
+`ENRICH_LIMIT` limita cuántas reseñas se envían en una corrida (200 por defecto). Como la consulta solo toma reseñas sin enriquecer, se puede correr varias veces hasta cubrirlas todas.
+
+### Un prompt que obedece: el caso real
+
+El tema debe salir de una lista cerrada (`battery`, `connectivity`, `sound_quality`, `comfort`, `build_quality`, `shipping`, `price`, `support`, `other`). Si no, un `GROUP BY topic` cuenta por separado `battery` y `battery life`.
+
+| Intento | Cambio | Temas dentro de la lista |
+|---|---|---|
+| 1 | La lista al principio del prompt, temperatura por defecto | 15 % (173 de 1.132) |
+| 2 | La instrucción **después** del texto de la reseña, `MUST … nothing else`, `temperature = 0`, `max_output_tokens = 200` | 100 % (30 de 30) |
+
+Dos lecciones: el modelo pondera más lo último que lee, y un tope de tokens corta de raíz las salidas que degeneran en texto repetido. El `WHERE` final de la consulta es la red de seguridad: lo que no cumpla la lista no entra a gold.
+
+### Comprobarlo
+
+```sql
+SELECT topic, COUNTIF(sentiment = 'positive') AS pos, COUNTIF(sentiment = 'negative') AS neg
+FROM gold.reviews_enriched GROUP BY topic ORDER BY topic;   -- solo nueve valores
+
+SELECT COUNT(*) FROM gold.reviews_enriched
+WHERE (rating >= 4 AND sentiment = 'negative') OR (rating <= 2 AND sentiment = 'positive');  -- 0
+```

@@ -267,3 +267,15 @@ El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el ú
 **Resultado:** bronze tenía 1.164 filas y 1.132 `review_id` distintos; silver quedó con 1.132 filas (32 duplicados descartados). Un segundo MERGE no modificó ninguna fila.
 **Descartado:** un watermark persistido (agrega estado y la carrera de arriba); `INSERT ... SELECT DISTINCT` (no es idempotente: reinserta en cada corrida).
 **Pendiente:** el MERGE se ejecuta a demanda con `scripts/run_sql.sh`. La consulta programada (BigQuery Data Transfer) se agrega junto con el resto de la automatización, cuando haya algo más que programar.
+
+### Gemini desde BigQuery: modelo remoto, lotes y tema de lista cerrada
+
+**Decisión:** el enriquecimiento corre dentro de BigQuery (`sql/enrichment/reviews_enriched.sql`) con `AI.GENERATE_TABLE` sobre un modelo remoto (`gold.gemini`, `sql/enrichment/model.sql`). Solo se envían a Gemini las reseñas de silver que todavía no están en `gold.reviews_enriched`, con un tope por corrida (`ENRICH_LIMIT`). Terraform crea la conexión de BigQuery y le da `roles/aiplatform.user` (`infra/enrichment.tf`).
+**Por qué:**
+- **Micro-batch en vez de evento por evento:** el streaming no depende de la cuota ni de la latencia de un LLM, y si el prompt cambia se puede re-enriquecer el histórico borrando la tabla.
+- **Incremental:** el `LEFT JOIN` contra gold deja fuera lo ya enriquecido, así que correr de nuevo no cuesta nada por las filas viejas.
+- **Los fallos no se guardan:** una llamada fallida no inserta fila, y la próxima corrida la reintenta sola.
+- **Tema de lista cerrada:** con texto libre, la primera prueba devolvió `battery` y `battery life` para lo mismo; cualquier `GROUP BY topic` los habría contado por separado. Pedir la lista en el prompt no bastó: sobre las 1.132 reseñas solo el 15 % cayó dentro de la lista, y 18 salidas degeneraron en texto repetido. Lo que lo arregló (30 de 30 en una prueba de 30 filas) fue poner la instrucción **después** del texto de la reseña, con "MUST … nothing else", `temperature = 0` y `max_output_tokens = 200`. Además el `WHERE` final descarta cualquier fila fuera de la lista, para que se reintente en vez de contaminar gold.
+**Lo que se aprendió:**
+- **Probar un prompt en 30 filas antes de procesar todo.** Reprocesar 1.132 reseñas tarda unos 5 minutos y cuesta centavos; una prueba de 30 filas tarda segundos y habría detectado el problema antes.
+- La creación del modelo falló con "no tiene permiso para usar el endpoint" aunque el rol ya estaba asignado. Era propagación de IAM: el segundo intento, un par de minutos después, funcionó sin cambios. El mismo error aparece si falta el rol, así que primero se verifica la política y después se reintenta antes de investigar otra causa.
