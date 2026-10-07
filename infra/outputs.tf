@@ -46,3 +46,8 @@ output "bigquery_datasets" {
 output "dataflow_runner_email" {
   value = google_service_account.dataflow_runner.email
 }
+
+output "vertex_connection" {
+  description = "BigQuery connection used by the remote Gemini and embedding models."
+  value       = "${var.project_id}.${var.region}.${google_bigquery_connection.vertex.connection_id}"
+}
