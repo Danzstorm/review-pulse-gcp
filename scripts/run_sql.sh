@@ -14,4 +14,5 @@ sql=${sql//'${region}'/$REGION}
 sql=${sql//'${gemini_endpoint}'/${GEMINI_ENDPOINT:-gemini-2.5-flash}}
 sql=${sql//'${lookback_days}'/${LOOKBACK_DAYS:-3}}
 sql=${sql//'${enrich_limit}'/${ENRICH_LIMIT:-200}}
+sql=${sql//'${embedding_endpoint}'/${EMBEDDING_ENDPOINT:-gemini-embedding-001}}
 bq query --project_id="$PROJECT" --location="$REGION" --use_legacy_sql=false --nouse_cache <<<"$sql"
