@@ -251,3 +251,19 @@ La conciliación detectó la pérdida: se esperaban 10 rechazos y había 2.
 ### Pendiente para la Fase 3: la carrera del watermark
 
 El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el último watermark procesado. Pero `ingest_ts` es el publish time, y la fila recién se puede consultar unos segundos después, cuando la Storage Write API la confirma. Si el MERGE corre justo en ese intervalo, avanza el watermark y la fila queda atrás para siempre. La solución es releer con solapamiento (`ingest_ts > watermark - 15 minutos`), lo que es seguro porque el MERGE es idempotente.
+
+---
+
+## Fase 3 — Capas y LLM
+
+### Silver: MERGE de solo inserción sobre una ventana fija
+
+**Decisión:** `sql/silver/reviews.sql` hace un `MERGE` que solo inserta (`WHEN NOT MATCHED`) y relee siempre los últimos `lookback_days` días de bronze (3 por defecto), sin guardar un watermark. Dentro de la ventana, `ROW_NUMBER()` por `review_id` conserva la primera copia en llegar.
+**Por qué:** el MERGE es idempotente, así que releer filas ya procesadas no cambia nada. Con eso desaparece la carrera del watermark descrita en la Fase 2: no hay marca que pueda avanzar antes de que una fila sea consultable, y tampoco estado que guardar ni reparar. El costo es releer bronze, acotado por la partición `ingest_ts`.
+**Detalles que importan:**
+- La clave del MERGE incluye `event_ts` (las copias de una reseña comparten `event_ts`), de modo que BigQuery puede podar particiones de silver en lugar de escanearlas todas.
+- Silver se particiona por `DATE(event_ts)` y se agrupa por `product_id`; bronze, por `ingest_ts`. Una reseña tardía cae en una partición antigua de silver.
+- **Solo inserción:** una reseña no se corrige después de publicada. Si en el futuro se admiten ediciones, haría falta `WHEN MATCHED`.
+**Resultado:** bronze tenía 1.164 filas y 1.132 `review_id` distintos; silver quedó con 1.132 filas (32 duplicados descartados). Un segundo MERGE no modificó ninguna fila.
+**Descartado:** un watermark persistido (agrega estado y la carrera de arriba); `INSERT ... SELECT DISTINCT` (no es idempotente: reinserta en cada corrida).
+**Pendiente:** el MERGE se ejecuta a demanda con `scripts/run_sql.sh`. La consulta programada (BigQuery Data Transfer) se agrega junto con el resto de la automatización, cuando haya algo más que programar.
