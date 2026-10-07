@@ -105,6 +105,36 @@ Un pipeline batch lee un conjunto finito y termina. Uno de streaming lee de Pub/
 | **Drain** | Deja de leer mensajes nuevos, termina de procesar lo que ya tiene y cierra las ventanas abiertas | Al terminar una sesión normal (`scripts/stop.sh`) |
 | **Cancel** | Detiene todo de inmediato. Lo que estaba en vuelo sin confirmar vuelve a Pub/Sub. | Antes de destruir la infraestructura, o si el job está roto (`scripts/stop.sh --cancel`) |
 
+### Flex Template
+
+Una Flex Template empaqueta el pipeline para lanzarlo sin el código ni las dependencias en la máquina local. Tiene dos partes:
+
+- **Una imagen de contenedor** en Artifact Registry, con Python, Beam, un JRE, `pipeline.py`, el schema de bronze y el binario *launcher* de Google.
+- **Un JSON de especificación** en GCS (`gs://<bucket>/templates/review-pulse.json`), que apunta a esa imagen y declara los parámetros aceptados (`pipelines/dataflow/metadata.json`).
+
+**Qué pasa al lanzarla** (`gcloud dataflow flex-template run`):
+
+1. Dataflow arranca una VM *launcher* con la imagen.
+2. El launcher ejecuta `pipeline.py` con los parámetros recibidos: construye el grafo y envía el job.
+3. Recién entonces arrancan los workers, que procesan los mensajes.
+
+Por eso un lanzamiento desde la template tarda unos minutos más que uno desde la máquina local.
+
+**Por qué la imagen incluye Java:** la expansión del transform cross-language de BigQuery ocurre al **construir** el grafo, y eso ahora pasa dentro del launcher, no en la máquina local.
+
+**Los workers no usan esta imagen.** Dataflow elige la imagen oficial del SDK de Beam que coincide con la versión de Python y de Beam del launcher (3.13 y 2.76). La imagen propia solo existe para construir y enviar el job.
+
+**Quién hace qué:**
+
+| Pieza | Rol |
+|---|---|
+| Cloud Build | Construye la imagen a partir de `pipelines/dataflow/Dockerfile`, con la service account `review-pulse-builder` |
+| Artifact Registry | Guarda la imagen (repositorio `review-pulse`) |
+| GCS | Guarda el JSON de especificación |
+| Dataflow | Ejecuta el launcher y después los workers, con la service account del job, que necesita permiso de lectura sobre el repositorio |
+
+**Etiqueta de la imagen:** el hash corto del commit (`bd65ab3`), con el sufijo `-dirty` si `pipelines/dataflow/` tenía cambios sin commitear. Así cada job queda asociado al código exacto con el que se construyó.
+
 ---
 
 ## BigQuery

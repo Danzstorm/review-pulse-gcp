@@ -237,9 +237,49 @@ gcloud billing budgets list --billing-account=$BILLING_ACCOUNT --format="value(d
 
 ---
 
+## Paso 10 · Flex Template: repositorio, builder y permisos
+
+Empaqueta el pipeline como imagen de contenedor (ver "Flex Template" en el capítulo 01). Equivale a `infra/flex_template.tf`.
+
+```bash
+# APIs
+gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com --project=$PROJECT
+
+# Repositorio de imágenes
+gcloud artifacts repositories create review-pulse   --repository-format=docker --location=$REGION --project=$PROJECT
+
+# Bucket para el código fuente de Cloud Build (con borrado a los 7 días)
+gcloud storage buckets create gs://$PROJECT-builds --project=$PROJECT --location=$REGION   --uniform-bucket-level-access
+echo '{"rule":[{"action":{"type":"Delete"},"condition":{"age":7}}]}' > /tmp/lifecycle.json
+gcloud storage buckets update gs://$PROJECT-builds --lifecycle-file=/tmp/lifecycle.json
+
+# Service account del build
+gcloud iam service-accounts create review-pulse-builder   --display-name="Review Pulse - Cloud Build" --project=$PROJECT
+BUILDER=review-pulse-builder@$PROJECT.iam.gserviceaccount.com
+
+# El build publica la imagen, lee el código fuente y escribe logs
+gcloud artifacts repositories add-iam-policy-binding review-pulse --location=$REGION --project=$PROJECT   --member=serviceAccount:$BUILDER --role=roles/artifactregistry.writer
+gcloud storage buckets add-iam-policy-binding gs://$PROJECT-builds   --member=serviceAccount:$BUILDER --role=roles/storage.objectViewer
+gcloud projects add-iam-policy-binding $PROJECT   --member=serviceAccount:$BUILDER --role=roles/logging.logWriter
+
+# La VM launcher corre como la service account del job y descarga la imagen
+gcloud artifacts repositories add-iam-policy-binding review-pulse --location=$REGION --project=$PROJECT   --member=serviceAccount:$SA --role=roles/artifactregistry.reader
+```
+
+Después, `bash scripts/build_template.sh` construye la imagen y publica el JSON de especificación. Los mismos pasos a mano:
+
+```bash
+IMAGE=$REGION-docker.pkg.dev/$PROJECT/review-pulse/pipeline:manual
+gcloud builds submit pipelines/dataflow --project=$PROJECT --region=$REGION   --config=pipelines/dataflow/cloudbuild.yaml --substitutions=_IMAGE=$IMAGE   --service-account=projects/$PROJECT/serviceAccounts/$BUILDER   --gcs-source-staging-dir=gs://$PROJECT-builds/source
+
+gcloud dataflow flex-template build gs://$BUCKET/templates/review-pulse.json   --project=$PROJECT --image=$IMAGE --sdk-language=PYTHON   --metadata-file=pipelines/dataflow/metadata.json
+```
+
+---
+
 ## Qué falta para correr el pipeline
 
-Nada más de infraestructura. El capítulo 04 cubre el entorno de Python y el lanzamiento. `scripts/run_dataflow.sh` toma los valores de `terraform output`; si la infraestructura se creó a mano, ejecuta directamente el comando `python pipelines/dataflow/pipeline.py` que aparece en ese script, reemplazando cada `$(tf ...)` por el valor correspondiente:
+Nada más de infraestructura. El capítulo 04 cubre el lanzamiento. `scripts/run_dataflow.sh` toma los valores de `terraform output`; si la infraestructura se creó a mano, ejecuta directamente el comando `gcloud dataflow flex-template run` que aparece en ese script, reemplazando cada `$(tf ...)` por el valor correspondiente:
 
 | `$(tf ...)` | Valor |
 |---|---|
@@ -258,7 +298,7 @@ El orden importa. **Primero los jobs de Dataflow:** si se borran la subscription
 
 ```bash
 # 1. Detener los jobs activos y esperar a que terminen
-gcloud dataflow jobs list --project=$PROJECT --region=$REGION --status=active --format="value(id)"
+gcloud dataflow jobs list --project=$PROJECT --region=$REGION --status=all   --filter="NOT state:(Done Failed Cancelled Drained Updated)" --format="value(id)"
 gcloud dataflow jobs cancel <JOB_ID> --project=$PROJECT --region=$REGION
 
 # 2. Presupuesto (si se creó)
@@ -272,6 +312,12 @@ bq rm -r -f -d $PROJECT:gold
 gcloud storage rm -r gs://$BUCKET
 gcloud pubsub subscriptions delete reviews-dataflow-sub --project=$PROJECT
 gcloud pubsub topics delete reviews --project=$PROJECT
+
+# 3b. Flex Template
+gcloud artifacts repositories delete review-pulse --location=$REGION --project=$PROJECT
+gcloud storage rm -r gs://$PROJECT-builds
+gcloud projects remove-iam-policy-binding $PROJECT --member=serviceAccount:$BUILDER --role=roles/logging.logWriter
+gcloud iam service-accounts delete $BUILDER --project=$PROJECT
 
 # 4. Identidad (sus permisos de recurso desaparecen con los recursos borrados;
 #    los de proyecto se quitan explícitamente)

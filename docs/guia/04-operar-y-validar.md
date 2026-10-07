@@ -55,26 +55,28 @@ Se puede publicar antes de lanzar el pipeline: los mensajes esperan en la subscr
 
 ## 4. Lanzar el pipeline
 
+El job se lanza desde la Flex Template, así que no hace falta Python, Beam ni Java en la máquina local. La primera vez (y tras cada cambio en `pipelines/dataflow/`) hay que construir la template:
+
 ```bash
+bash scripts/build_template.sh    # Cloud Build -> imagen en Artifact Registry + JSON en GCS
 bash scripts/run_dataflow.sh
 ```
 
-El script envía el job y termina. La salida incluye `Submitted job: <JOB_ID>` y el enlace a la consola. **Desde ese momento el job cobra**, hasta que se detenga (paso 7).
+El script envía el job y termina. La salida incluye el `id` del job. **Desde ese momento el job cobra**, hasta que se detenga (paso 7). Pasa por `QUEUED` mientras arranca la VM launcher y después los workers: cuenta con unos minutos más que un lanzamiento local.
 
 Qué hace cada opción del script:
 
 | Opción | Para qué |
 |---|---|
-| `GOOGLE_CLOUD_QUOTA_PROJECT=$PROJECT` | Atribuye las llamadas a la API a este proyecto, aunque el ADC tenga otro proyecto como quota project. Afecta solo a ese proceso. |
-| `--runner=DataflowRunner` | Ejecutar en Dataflow y no en local |
+| `--template-file-gcs-location` | El JSON de especificación que apunta a la imagen del pipeline |
 | `--project`, `--region` | Dónde se crea el job. La región coincide con la del bucket y los datasets. |
-| `--job_name=review-pulse-<fecha>` | Nombre único por lanzamiento; Dataflow no admite dos jobs activos con el mismo nombre |
-| `--service_account_email` | Los workers corren con la cuenta dedicada y sus permisos mínimos, no con la cuenta por defecto de Compute Engine |
-| `--temp_location`, `--staging_location` | Carpetas del bucket donde Dataflow deja archivos temporales y el código empaquetado del job |
-| `--enable_streaming_engine` | El estado del streaming vive en el servicio de Google y no en el disco del worker |
-| `--worker_machine_type=e2-standard-2` | Máquina chica y barata, con buena disponibilidad. El tipo por defecto no tenía capacidad en la zona (ver problemas). |
-| `--max_num_workers=1` | Nunca más de una VM: control de costos |
-| `--input_subscription`, `--bronze_table`, `--bucket` | Las opciones propias del pipeline (`ReviewOptions`) |
+| nombre `review-pulse-<fecha>` | Nombre único por lanzamiento; Dataflow no admite dos jobs activos con el mismo nombre |
+| `--service-account-email` | Los workers y el launcher corren con la cuenta dedicada y sus permisos mínimos, no con la cuenta por defecto de Compute Engine |
+| `--temp-location`, `--staging-location` | Carpetas del bucket donde Dataflow deja archivos temporales y de staging |
+| `--enable-streaming-engine` | El estado del streaming vive en el servicio de Google y no en el disco del worker |
+| `--worker-machine-type=e2-standard-2` | Máquina chica y barata, con buena disponibilidad. El tipo por defecto no tenía capacidad en la zona (ver problemas). |
+| `--max-workers=1` | Nunca más de una VM: control de costos |
+| `--parameters=input_subscription=…,bronze_table=…,bucket=…` | Las opciones propias del pipeline (`ReviewOptions`), declaradas en `metadata.json` |
 
 ## 5. Observar el job
 
@@ -171,7 +173,7 @@ Todos estos errores ocurrieron de verdad durante la construcción del pipeline.
 
 | Síntoma | Causa | Solución |
 |---|---|---|
-| Al lanzar: `403 Dataflow API has not been used in project <otro-proyecto> … SERVICE_DISABLED` | El ADC tiene otro proyecto como *quota project*, y las llamadas se atribuyen a ese proyecto, donde Dataflow no está habilitado | Definir `GOOGLE_CLOUD_QUOTA_PROJECT=<proyecto>` para el proceso (ya lo hace `run_dataflow.sh`). Evitar `set-quota-project`, que cambia el ADC para todo. |
+| Al lanzar: `403 Dataflow API has not been used in project <otro-proyecto> … SERVICE_DISABLED` | El ADC tiene otro proyecto como *quota project*, y las llamadas se atribuyen a ese proyecto, donde Dataflow no está habilitado | Definir `GOOGLE_CLOUD_QUOTA_PROJECT=<proyecto>` para el proceso (solo aplica si se lanza con `python pipeline.py`; el lanzamiento desde la template no pasa por el ADC local). Evitar `set-quota-project`, que cambia el ADC para todo. |
 | En los logs: `ZONE_RESOURCE_POOL_EXHAUSTED`; el job sigue sin workers y a veces termina en `Failed` | Google no tiene capacidad para ese tipo de máquina en esa zona (stockout). No es un problema de cuota. | Dataflow reintenta en otra zona. Usar `e2-standard-2`, que suele tener más disponibilidad. Si persiste, relanzar más tarde. |
 | Advertencia: `Querying the configuration of Pub/Sub subscription … failed` | `pubsub.subscriber` no incluye `pubsub.subscriptions.get` | Otorgar `roles/pubsub.viewer` sobre la subscription |
 | Job en verde, 0 filas; en los logs: `'DatetimeWithNanoseconds' object has no attribute 'to_utc_datetime'` | El código trataba `publish_time` como `Timestamp` de Beam, pero Dataflow entrega un `datetime` | Normalizar con `datetime.fromtimestamp(...)` (ver `ParseAndValidate`). El test usa ahora el tipo real. |

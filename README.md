@@ -13,7 +13,7 @@ Para responderlas, el agente cruza la métrica (SQL sobre BigQuery) con las rese
 | Fase | Alcance | Estado |
 |---|---|---|
 | 1. Base | Infraestructura con Terraform y generador de eventos | ✅ Desplegada y verificada |
-| 2. Streaming | Pipeline de Dataflow: validación, bronze, GCS y dead-letter | 🚧 Verificado en Dataflow; falta la Flex Template |
+| 2. Streaming | Pipeline de Dataflow: validación, bronze, GCS y dead-letter | ✅ Verificada de punta a punta, lanzada desde una Flex Template |
 | 3. Capas y LLM | MERGE a silver, enriquecimiento con Gemini, embeddings y gold | Pendiente |
 | 4. Agente | API en Cloud Run con function calling | Pendiente |
 | 5. CI y demo | GitHub Actions y demo del escenario de incidente | Pendiente |
@@ -71,7 +71,8 @@ pip install -r pipelines/dataflow/requirements.txt
 python tests/test_generator.py
 python tests/test_pipeline.py
 
-# 4. Pipeline en Dataflow (requiere Java: la escritura a BigQuery es cross-language)
+# 4. Pipeline en Dataflow, desde una Flex Template (solo requiere gcloud)
+bash scripts/build_template.sh    # Cloud Build: imagen en Artifact Registry + spec en GCS
 bash scripts/run_dataflow.sh      # toma toda la configuración de `terraform output`
 bash scripts/stop.sh              # drain del job; --cancel para detenerlo de inmediato
 bash scripts/down.sh              # cancela los jobs y ejecuta terraform destroy
@@ -104,10 +105,10 @@ Sin procesos corriendo, la infraestructura cuesta prácticamente cero. El costo 
 ## Estructura
 
 ```
-infra/                Terraform: APIs, bucket, Pub/Sub, datasets, tabla bronze, IAM y presupuesto
+infra/                Terraform: APIs, bucket, Pub/Sub, datasets, tabla bronze, IAM, Flex Template y presupuesto
 generator/            Publicador de reseñas sintéticas y catálogo de productos
-pipelines/dataflow/   Pipeline de streaming (Apache Beam) y schema de bronze
-scripts/              Lanzar, detener, desmontar y conciliar
+pipelines/dataflow/   Pipeline de streaming (Apache Beam), schema de bronze y Dockerfile de la Flex Template
+scripts/              Construir la template, lanzar, detener, desmontar y conciliar
 sql/experiments/      Validación en SQL del camino alternativo (BigQuery subscription)
 tests/                Tests del generador y del pipeline
 docs/                 Decisiones de diseño (ADRs) y guía paso a paso

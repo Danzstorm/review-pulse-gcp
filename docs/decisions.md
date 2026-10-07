@@ -212,6 +212,24 @@ La conciliación detectó la pérdida: se esperaban 10 rechazos y había 2.
 **Por qué:** la primera versión usaba un `Timestamp` de Beam. El test pasó, pero en Dataflow cada evento falló con `'DatetimeWithNanoseconds' object has no attribute 'to_utc_datetime'`. Un test cuyos datos no tienen la forma de los de producción da una confianza falsa. Además, en streaming Dataflow reintenta indefinidamente los elementos que fallan: el job sigue en verde (`Running`) sin escribir nada, y los mensajes se quedan en Pub/Sub porque nunca se confirman. No se pierden datos, pero un job "verde" no garantiza que esté funcionando.
 **Segundo caso:** el paso `Convert dict to Beam Row` de la Storage Write API no convierte `datetime` a `Timestamp` de Beam, y falló en Dataflow con `'datetime.datetime' object has no attribute 'micros'`. Ahora `to_bq_row` hace esa conversión justo antes de escribir, y hay un test que ejecuta en local ese mismo transform (`StorageWriteToBigQuery.ConvertToBeamRows`) sin tocar BigQuery. La regla que dejan los dos casos: cuando algo falla en la nube, primero se reproduce en local con el mismo transform, y recién después se corrige.
 
+### Flex Template construida con Cloud Build
+
+**Decisión:** el pipeline se distribuye como Flex Template. Hay una imagen en Artifact Registry y una especificación JSON en `gs://<bucket>/templates/review-pulse.json`. `scripts/build_template.sh` construye la imagen con Cloud Build, y `scripts/run_dataflow.sh` lanza con `gcloud dataflow flex-template run`.
+**Por qué:** lanzar el job ya no depende de la máquina local. Antes hacían falta Python, Beam y Java instalados, y el grafo se construía en la laptop. Ahora alcanza con `gcloud`, y la misma pieza sirve para la CI de la Fase 5.
+**Alternativa descartada:** construir con Docker Desktop local. La imagen terminaría igual en Artifact Registry, pero el build dependería de la memoria y la configuración de la máquina local.
+**Detalles:**
+- **La imagen es solo el launcher.** Los workers usan el contenedor oficial de Beam que elige Dataflow según las versiones de Python y Beam. Así no hay que mantener una imagen de worker y el pipeline no tiene dependencias extra.
+- **Tiene Java porque la expansión cross-language de la Storage Write API ocurre al construir el grafo**, y eso ahora pasa dentro de la VM launcher.
+- **El tag de la imagen es el commit, con `-dirty` si `pipelines/dataflow/` tiene cambios sin commitear o archivos nuevos.** Cada job se puede rastrear hasta el código exacto que lo generó. Se usa `git status --porcelain` y no `git diff`, porque `git diff` no ve los archivos nuevos.
+- **Cloud Build usa una service account propia con lo mínimo:** escribir en este repositorio, leer su bucket de código fuente y escribir logs. Los logs van solo a Cloud Logging, porque una service account de usuario no tiene bucket de logs por defecto.
+- **El código fuente del build va a un bucket administrado por Terraform** (`<project>-builds`, que borra los archivos a los 7 días). Si no, `gcloud builds submit` crea `<project>_cloudbuild` por su cuenta, y ese bucket queda fuera del `destroy`.
+
+### Base del launcher: `python:3.13-slim` y no la imagen del SDK de Beam
+
+**Decisión:** el launcher parte de `python:3.13-slim` e instala `apache-beam[gcp]==2.76.0` con pip. El binario del launcher se copia desde `python3-template-launcher-base`.
+**Por qué:** la documentación sugiere usar `apache/beam_python3.13_sdk` como base, pero el build falló con `failed to register layer: archive/tar: invalid tar header`. Las 28 capas de esa imagen están comprimidas con zstd (`application/vnd.oci.image.layer.v1.tar+zstd`), y el daemon de Docker de los workers de Cloud Build no las puede descomprimir. `python:3.13-slim` usa gzip. Se comprobó con `docker manifest inspect -v` antes de cambiar la base.
+**Trade-off:** la imagen tarda más en construirse, porque instala Beam con pip. Se construye solo cuando cambia el pipeline, no en cada lanzamiento.
+
 ### Retrospectiva: qué se haría distinto
 
 - **Primero un esqueleto que camine.** El pipeline se escribió completo antes de desplegarlo, así que en la nube aparecieron cinco problemas encadenados: quota project, stockout, un permiso faltante y dos errores de tipos. Un pipeline mínimo (Pub/Sub → BigQuery) desplegado al principio habría expuesto los problemas de infraestructura con mucho menos código en juego.
