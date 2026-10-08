@@ -15,7 +15,7 @@ Para responderlas, el agente cruza la métrica (SQL sobre BigQuery) con las rese
 | 1. Base | Infraestructura con Terraform y generador de eventos | ✅ Desplegada y verificada |
 | 2. Streaming | Pipeline de Dataflow: validación, bronze, GCS y dead-letter | ✅ Verificada de punta a punta, lanzada desde una Flex Template |
 | 3. Capas y LLM | MERGE a silver, enriquecimiento con Gemini, embeddings y gold | ✅ Silver, Gemini, embeddings con búsqueda vectorial y métricas gold |
-| 4. Agente | API en Cloud Run con function calling | Pendiente |
+| 4. Agente | API en Cloud Run con function calling | ✅ Desplegado, privado, con respuestas verificadas |
 | 5. CI y demo | GitHub Actions y demo del escenario de incidente | Pendiente |
 
 ## Arquitectura
@@ -70,12 +70,17 @@ python generator/publish.py --project <PROJECT_ID> --incident-start 2 --incident
 pip install -r pipelines/dataflow/requirements.txt
 python tests/test_generator.py
 python tests/test_pipeline.py
+python tests/test_agent.py
 
 # 4. Pipeline en Dataflow, desde una Flex Template (solo requiere gcloud)
 bash scripts/build_template.sh    # Cloud Build: imagen en Artifact Registry + spec en GCS
 bash scripts/run_dataflow.sh      # toma toda la configuración de `terraform output`
 bash scripts/stop.sh              # drain del job; --cancel para detenerlo de inmediato
 bash scripts/down.sh              # cancela los jobs y ejecuta terraform destroy
+
+# 5. Capas de datos y agente (ver docs/guia/06 y 07)
+bash scripts/load_products.sh && bash scripts/run_sql.sh sql/silver/reviews.sql
+bash scripts/deploy_agent.sh      # imagen en Cloud Build y revisión en Cloud Run (privado)
 ```
 
 El generador inyecta a propósito casos que el pipeline debe manejar: JSON mal formado, eventos que rompen reglas de validación, duplicados exactos, eventos que llegan con horas de retraso y un incidente de reseñas negativas sobre conectividad para un producto.
@@ -113,7 +118,8 @@ sql/silver/           MERGE de bronze a silver (deduplicación)
 sql/enrichment/       Modelos remotos, enriquecimiento con Gemini y embeddings
 sql/gold/             Búsqueda semántica y métricas diarias por producto
 sql/experiments/      Validación en SQL del camino alternativo (BigQuery subscription)
-tests/                Tests del generador y del pipeline
+agent/                Agente en Cloud Run: FastAPI, Gemini con function calling y las dos herramientas
+tests/                Tests del generador, del pipeline y del agente
 docs/                 Decisiones de diseño (ADRs) y guía paso a paso
 ```
 

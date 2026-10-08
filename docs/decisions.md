@@ -297,3 +297,29 @@ El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el ú
 **Cómo se obtuvo variedad:** cada petición combina un tema y un sentimiento con uno de 12 estilos (muy corta, larga, formal, coloquial, sin tildes, con una comparación, con una cifra concreta, etc.) y un número de variante, con `temperature = 1`. Después se descartan los duplicados por título y cuerpo. De 360 peticiones quedaron 227 reseñas únicas; las demás fueron duplicadas o respuestas vacías.
 **Lo que se aprendió:** con `max_output_tokens = 300`, algunas respuestas llegaron con `body` nulo y rompieron el script que escribe el archivo. El filtro `title IS NOT NULL AND body IS NOT NULL` en la consulta lo resuelve en el origen.
 **Límite:** el banco no tiene ruido real (faltas de ortografía, emojis, mezcla de idiomas) más allá del estilo "sin tildes". Es suficiente para demostrar la búsqueda semántica, no para evaluar el modelo.
+
+---
+
+## Fase 4 — Agente
+
+### Dos herramientas cerradas y una respuesta que se verifica
+
+**Decisión:** el agente (FastAPI en Cloud Run, Gemini con function calling) tiene solo `get_metrics` y `search_reviews`, ambas con SQL fijo y parámetros validados. El servidor comprueba que cada `review_id` citado en la respuesta lo haya devuelto una herramienta; si no, da un reintento y, si vuelve a fallar, descarta la respuesta.
+**Por qué:** en la primera prueba, Gemini no llamó a `search_reviews` y respondió con cinco reseñas e IDs inventados que parecían reales. Un prompt más estricto ayudó, pero un prompt no es una garantía: la verificación en el servidor sí lo es, porque no depende de que el modelo obedezca. Con herramientas cerradas, además, el modelo no puede escribir SQL arbitrario.
+**Descartado:** NL-to-SQL libre (impredecible y más difícil de proteger); confiar solo en el prompt (falló en la primera prueba).
+**Lo que se aprendió:**
+- El campo `cited_reviews` (solo IDs que una herramienta devolvió **y** que la respuesta menciona) fue lo que delató la invención: salía vacío.
+- Gemini agrupa varios IDs en un corchete, `[id1, id2]`; la primera verificación los trataba como uno solo y rechazaba respuestas correctas.
+- Cuando faltan datos para un período de comparación, el agente lo dice en vez de inventar una tendencia. Eso depende de la regla "para hablar de una subida o bajada hacen falta dos períodos".
+
+### Cloud Run privado, con techo de gasto
+
+**Decisión:** el servicio no tiene `allUsers` como invoker (sin credencial responde 403), escala a cero (`min = 0`) y tiene `max = 2` instancias. Su cuenta de servicio solo lee el dataset `gold` (`bigquery.dataViewer` a nivel de dataset), usa la conexión de Vertex (`bigquery.connectionUser`) y llama a Gemini (`aiplatform.user`). El servicio se crea con una variable (`deploy_agent`) porque Cloud Run exige que la imagen exista antes.
+**Por qué:** una API pública que llama a un LLM es una forma de que otros gasten tu dinero. Privada por defecto y con un límite de instancias, el peor caso está acotado; abrirla para una demo es una decisión aparte, con cuotas.
+**Lo que se aprendió:** Cloud Run reserva la ruta `/healthz` y responde 404 desde su propio frontend, antes de llegar al contenedor y antes de comprobar la autenticación. El endpoint de salud del agente se llama `/health`.
+
+### Historia de datos para el escenario del incidente
+
+**Decisión:** `scripts/backfill.sh` publica días normales (con `--event-days-ago`) antes del incidente, a través del pipeline real.
+**Por qué:** el incidente sembrado existía, pero toda la historia era del mismo día o de otro día también con incidente. Sin un período normal para comparar no hay caída que explicar, y el agente lo dijo con razón: no tenía con qué comparar. Los datos de la demo eran el problema, no el agente.
+**Costo:** una sesión de Dataflow de unos 10 minutos (alrededor de 4 centavos) y unos centavos de Gemini para 2.000 reseñas más.

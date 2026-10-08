@@ -1,6 +1,6 @@
 # Guía paso a paso
 
-Cómo funciona Review Pulse por dentro y cómo reconstruirlo a mano, sin Terraform. Cubre lo construido hasta ahora: infraestructura base, generador de eventos, pipeline de streaming y, de la Fase 3, la capa silver.
+Cómo funciona Review Pulse por dentro y cómo reconstruirlo a mano, sin Terraform. Cubre lo construido hasta ahora: infraestructura base, generador de eventos, pipeline de streaming las capas silver y gold y el agente.
 
 | Capítulo | Contenido |
 |---|---|
@@ -10,7 +10,8 @@ Cómo funciona Review Pulse por dentro y cómo reconstruirlo a mano, sin Terrafo
 | [04 · Operar y validar](04-operar-y-validar.md) | Una sesión completa: tests, publicación, lanzamiento, monitoreo, conciliación, apagado y resolución de problemas. |
 | [05 · Alternativas](05-alternativas.md) | Otros caminos para el streaming en GCP y un experimento medido: BigQuery subscription + validación en SQL, en paralelo con Dataflow. |
 | [06 · Capas de datos](06-capas-de-datos.md) | Bronze, silver y gold: qué garantiza cada capa y cómo se construye, con diagramas. Crece con la Fase 3. |
+| [07 · El agente](07-agente.md) | Function calling, las dos herramientas, las barreras contra respuestas inventadas, seguridad y el escenario del incidente. |
 
-Orden sugerido: 01 → 02 → 03 → 04 → 05. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
+Orden sugerido: 01 → 02 → 03 → 04 → 05 → 06 → 07. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
 
 Las razones de cada decisión, con las alternativas descartadas, están en [`../decisions.md`](../decisions.md).
