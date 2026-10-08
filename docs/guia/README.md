@@ -4,6 +4,7 @@ Cómo funciona Review Pulse por dentro y cómo reconstruirlo a mano, sin Terrafo
 
 | Capítulo | Contenido |
 |---|---|
+| [00 · De cero a punta](00-de-cero-a-punta.md) | **Empieza aquí.** Una reseña real seguida por todo el sistema, con sus datos en cada etapa y los conceptos explicados desde cero. |
 | [01 · Conceptos](01-conceptos.md) | Pub/Sub, Beam/Dataflow, BigQuery e IAM, explicados sobre este sistema. Recorrido de un evento de punta a punta. |
 | [02 · Despliegue manual](02-despliegue-manual.md) | Cada recurso de `infra/` creado con `gcloud` y `bq`, en orden, con su verificación y su equivalente en Terraform. |
 | [03 · Recorrido del código](03-recorrido-del-codigo.md) | `generator/publish.py` y `pipelines/dataflow/pipeline.py` función por función, y qué protege cada test. |
@@ -14,6 +15,6 @@ Cómo funciona Review Pulse por dentro y cómo reconstruirlo a mano, sin Terrafo
 | [08 · CI/CD](08-ci-cd.md) | GitHub Actions, Workload Identity Federation (despliegue sin llaves) y los permisos que se descubrieron al probarlo. |
 | [09 · El mapa del despliegue](09-mapa-del-despliegue.md) | Por qué hay cinco despliegues distintos, el camino de un cambio al agente paso a paso, quién actúa como quién, y qué es esencial y qué opcional. |
 
-Orden sugerido: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
+Orden sugerido: 00 → 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
 
 Las razones de cada decisión, con las alternativas descartadas, están en [`../decisions.md`](../decisions.md).

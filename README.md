@@ -143,4 +143,4 @@ tests/                Tests del generador, del pipeline y del agente
 docs/                 Decisiones de diseño (ADRs) y guía paso a paso
 ```
 
-Para entender cada pieza y reconstruir el sistema a mano, sin Terraform, está la [guía paso a paso](docs/guia/README.md).
+Para entender cada pieza desde cero, empieza por [De cero a punta](docs/guia/00-de-cero-a-punta.md), que sigue una reseña real por todo el sistema. Para reconstruirlo a mano, sin Terraform, está la [guía paso a paso](docs/guia/README.md).
