@@ -42,6 +42,28 @@ def test_answer_without_citations_has_nothing_invented():
     assert agent._invented_ids("No hay datos suficientes.", RETRIEVED) == []
 
 
+def test_ids_from_earlier_turns_may_be_mentioned_again():
+    history = [{"role": "model", "text": f"Fallan [{REAL}]."}]
+    known = {REAL} | agent._ids_in(*(t["text"] for t in history))
+    assert agent._invented_ids(f"Como dije [{REAL}].", known) == []
+    assert agent._invented_ids(f"Y también [{OTHER}].", known) == [OTHER]
+
+
+def test_history_becomes_alternating_contents_ending_with_the_new_question():
+    history = [{"role": "user", "text": "hola"}, {"role": "model", "text": "¿en qué ayudo?"}]
+    contents = agent._contents("¿y los precios?", history)
+    assert [c.role for c in contents] == ["user", "model", "user"]
+    assert contents[-1].parts[0].text == "¿y los precios?"
+    assert [c.role for c in agent._contents("solo la pregunta", None)] == ["user"]
+
+
+def test_compare_periods_rejects_bad_periods_before_querying():
+    assert rejects(tools.compare_periods, "audífonos", "2026-10-02", "2026-10-07", "2026-10-07", "2026-10-08")  # overlap
+    assert rejects(tools.compare_periods, "audífonos", "2026-10-06", "2026-10-02", "2026-10-07", "2026-10-08")  # reversed
+    assert rejects(tools.compare_periods, "audífonos", "ayer", "2026-10-06", "2026-10-07", "2026-10-08")
+    assert rejects(tools.compare_periods, " ", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08")
+
+
 def test_tools_reject_bad_arguments_before_querying():
     assert rejects(tools.get_metrics, "audífonos", "ayer", "2026-10-07")
     assert rejects(tools.get_metrics, "audífonos", "2026-10-07", "2026-10-01")
