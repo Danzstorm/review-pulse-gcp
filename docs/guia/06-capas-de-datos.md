@@ -211,7 +211,16 @@ La pregunta **debe** convertirse con el mismo modelo y las mismas opciones que l
 
 **Sin índice, a propósito.** `CREATE VECTOR INDEX` exige al menos 5.000 filas y aquí hay 1.132. `VECTOR_SEARCH` sin índice compara contra todas las filas: es exacto y a este tamaño tarda segundos. Con más volumen se agrega el índice, que es aproximado pero mucho más rápido.
 
-**Una limitación honesta:** los datos son sintéticos y salen de plantillas, así que los primeros resultados son la misma frase repetida. La búsqueda funciona, pero con reseñas más variadas la demostración sería más convincente (banco de reseñas con Gemini, pendiente desde la Fase 1).
+**Textos idénticos cuentan una vez.** Las primeras reseñas del proyecto salen de 15 plantillas fijas, y cientos comparten el mismo texto. Sin más, los cinco primeros resultados eran la misma frase. `search_reviews.sql` pide los 500 más cercanos y se queda con uno por texto (`QUALIFY ROW_NUMBER() OVER (PARTITION BY content) = 1`), lo que además sirve con reseñas reales pegadas dos veces.
+
+**El banco de reseñas.** Las reseñas nuevas salen de `generator/review_bank.json`, que Gemini escribió una sola vez con estilos distintos (corta, larga, formal, coloquial, sin tildes…). Con ellas, la misma pregunta devuelve textos distintos y encuentra "se desconecta cada dos por tres" sin que la pregunta lo diga:
+
+| Distancia | Reseña |
+|---|---|
+| 0,097 | Se desconectan solos. A los 20 minutos el audífono izquierdo pierde conexión… |
+| 0,119 | un verdadero dolor de cabeza. estos auriculares son un desastre. se desconectan cada dos por tres… |
+| 0,136 | se desconecta todo el tiempo… el telefono no lo reconoce la mitad de las veces. |
+| 0,143 | El Bluetooth falla. Se corta la señal aunque el teléfono esté al lado. |
 
 ---
 

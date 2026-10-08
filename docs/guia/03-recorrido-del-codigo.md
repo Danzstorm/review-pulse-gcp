@@ -10,7 +10,7 @@ Publica reseñas sintéticas en Pub/Sub. Su objetivo no es solo producir volumen
 
 ### Constantes y `TEMPLATES`
 
-`TEMPLATES` guarda pares `(título, cuerpo)` por tema (`bateria`, `conectividad`, `envio`, `precio`, `calidad`) y sentimiento (`pos`, `neg`). El generador elige una plantilla según el tema y el sentimiento, **pero no publica ninguno de los dos**: el evento solo lleva `rating`, `title` y `body`. Así Gemini, en la Fase 3, tiene que inferirlos desde el texto, como pasaría con reseñas reales.
+`TEMPLATES` se carga de `generator/review_bank.json` (reseñas que Gemini escribió una vez; ver `scripts/build_bank.sh`) y guarda pares `(título, cuerpo)` por tema (`bateria`, `conectividad`, `envio`, `precio`, `calidad`) y sentimiento (`pos`, `neg`). El generador elige una plantilla según el tema y el sentimiento, **pero no publica ninguno de los dos**: el evento solo lleva `rating`, `title` y `body`. Así Gemini, en la Fase 3, tiene que inferirlos desde el texto, como pasaría con reseñas reales.
 
 `FIELDS` es el conjunto de campos de un evento válido y lo usan los tests.
 

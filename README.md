@@ -106,7 +106,7 @@ Sin procesos corriendo, la infraestructura cuesta prácticamente cero. El costo 
 
 ```
 infra/                Terraform: APIs, bucket, Pub/Sub, datasets, tabla bronze, IAM, Flex Template y presupuesto
-generator/            Publicador de reseñas sintéticas y catálogo de productos
+generator/            Publicador de reseñas sintéticas, banco de reseñas escrito por Gemini y catálogo de productos
 pipelines/dataflow/   Pipeline de streaming (Apache Beam), schema de bronze y Dockerfile de la Flex Template
 scripts/              Construir la template, lanzar, detener, desmontar y conciliar
 sql/silver/           MERGE de bronze a silver (deduplicación)

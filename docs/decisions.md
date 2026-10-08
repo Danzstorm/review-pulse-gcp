@@ -110,7 +110,7 @@ ADRs cortos: decisión, contexto, por qué y alternativas descartadas. Un bloque
 
 ### Banco de reseñas con Gemini, pendiente para la Fase 3
 
-**Decisión:** por ahora el texto sale de plantillas fijas. El banco de ~500 reseñas generado con Gemini que pide el spec queda pendiente.
+**Decisión:** por ahora el texto sale de plantillas fijas. El banco de reseñas generado con Gemini queda para la Fase 3 (resuelto al final de ella, ver «Banco de reseñas generado con Gemini y versionado»).
 **Por qué:** para generarlo hace falta la API de Vertex AI, que se habilita en la Fase 3. Las plantillas alcanzan para validar el pipeline de streaming. La variedad de texto solo importa cuando entran en juego los embeddings y la búsqueda semántica.
 
 ---
@@ -289,3 +289,11 @@ El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el ú
 - **Mismo modelo y mismas opciones al preguntar y al indexar:** la pregunta del usuario se convierte en vector con `gold.embedder`, 768 dimensiones y `SEMANTIC_SIMILARITY`. Si cambia cualquiera de los tres, los vectores dejan de ser comparables.
 - **Métricas con reconstrucción completa:** es una agregación pura; reconstruirla no puede desviarse y es más simple que un MERGE incremental.
 **Lo que se aprendió:** los datos sintéticos salen de plantillas, así que los primeros resultados de una búsqueda son la misma frase con distinto `review_id`. La búsqueda funciona, pero el banco de reseñas con variedad real (pendiente desde la Fase 1) es lo que haría la demostración convincente.
+
+### Banco de reseñas generado con Gemini y versionado
+
+**Decisión:** las reseñas sintéticas salen de `generator/review_bank.json`, un archivo versionado con unas 230 reseñas únicas (5 temas × positiva/negativa) que Gemini escribió una sola vez (`generator/build_bank.sql`, `scripts/build_bank.sh`). `generator/publish.py` sigue siendo determinista por `--seed` y no necesita red.
+**Por qué:** las 15 plantillas fijas producían la misma frase con distinto `review_id`, y eso volvía inútiles los embeddings: las cinco reseñas más cercanas a cualquier pregunta eran idénticas. Generar el texto en cada ejecución habría roto el determinismo del que depende la conciliación (misma semilla, mismo resultado esperado).
+**Cómo se obtuvo variedad:** cada petición combina un tema y un sentimiento con uno de 12 estilos (muy corta, larga, formal, coloquial, sin tildes, con una comparación, con una cifra concreta, etc.) y un número de variante, con `temperature = 1`. Después se descartan los duplicados por título y cuerpo. De 360 peticiones quedaron 227 reseñas únicas; las demás fueron duplicadas o respuestas vacías.
+**Lo que se aprendió:** con `max_output_tokens = 300`, algunas respuestas llegaron con `body` nulo y rompieron el script que escribe el archivo. El filtro `title IS NOT NULL AND body IS NOT NULL` en la consulta lo resuelve en el origen.
+**Límite:** el banco no tiene ruido real (faltas de ortografía, emojis, mezcla de idiomas) más allá del estilo "sin tildes". Es suficiente para demostrar la búsqueda semántica, no para evaluar el modelo.
