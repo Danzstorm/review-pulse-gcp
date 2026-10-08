@@ -139,7 +139,7 @@ def test_one_file_per_window_and_no_lost_lines():
 
         files = sorted(str(f.relative_to(tmp)).replace("\\", "/") for f in Path(tmp).rglob("*.jsonl"))
         assert files == ["dt=2026-09-23/reviews-2355-p0.jsonl", "dt=2026-09-24/reviews-0000-p0.jsonl"], files
-        lines = [json.loads(l) for l in (Path(tmp) / files[0]).read_text(encoding="utf-8").splitlines()]
+        lines = [json.loads(line) for line in (Path(tmp) / files[0]).read_text(encoding="utf-8").splitlines()]
         assert sorted(r["review_id"] for r in lines) == sorted(f"w1-{i}" for i in range(25))
         assert lines[0]["ingest_ts"].startswith("2026-09-23T17:05")
 

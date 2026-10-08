@@ -136,14 +136,16 @@ def main(argv=None):
     recent = deque(maxlen=50)
 
     if args.dry_run:
-        send = lambda data: sys.stdout.buffer.write(data + b"\n")
+        def send(data):
+            sys.stdout.buffer.write(data + b"\n")
     else:
         from google.cloud import pubsub_v1  # lazy: --dry-run works without the SDK
 
         client = pubsub_v1.PublisherClient()
         topic_path = client.topic_path(args.project, args.topic)
         # ponytail: synchronous publish, fine at demo rates (~20/min); batch futures if rate grows to thousands/min
-        send = lambda data: client.publish(topic_path, data).result()
+        def send(data):
+            client.publish(topic_path, data).result()
 
     total = int(args.rate * args.duration)
     for i in range(total):

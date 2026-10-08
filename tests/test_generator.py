@@ -45,7 +45,9 @@ def test_incident_concentrates_negative_connectivity_reviews():
     # rate 20/min: minute 0-5 normal, minute 5-10 incident on P-0001
     events = run(200, invalid_ratio=0, dup_ratio=0, incident_start=5, incident_minutes=5)
     before, during = events[:100], events[100:]
-    hits = lambda batch: sum(e["product_id"] == "P-0001" and e["rating"] <= 2 for e in batch)
+    def hits(batch):
+        return sum(e["product_id"] == "P-0001" and e["rating"] <= 2 for e in batch)
+
     assert hits(during) >= 35, hits(during)
     assert hits(before) <= 10, hits(before)
 
@@ -65,7 +67,9 @@ def test_malformed_payloads_do_not_parse():
 def test_late_events_lag_behind_ingest_time():
     events = run(3000, invalid_ratio=0, dup_ratio=0, late_ratio=0.05)
     now = datetime.now(timezone.utc)
-    age = lambda e: now - datetime.strptime(e["event_ts"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    def age(e):
+        return now - datetime.strptime(e["event_ts"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+
     share = sum(age(e) >= timedelta(minutes=29) for e in events) / len(events)
     assert 0.03 <= share <= 0.07, share
 
