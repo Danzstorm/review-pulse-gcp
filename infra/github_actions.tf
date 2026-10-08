@@ -91,3 +91,19 @@ resource "google_storage_bucket_iam_member" "deployer_uploads_sources" {
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.deployer.email}"
 }
+
+# gcloud checks the staging bucket exists before uploading; objectAdmin has no buckets.get.
+resource "google_storage_bucket_iam_member" "deployer_sees_builds_bucket" {
+  bucket = google_storage_bucket.builds.name
+  role   = "roles/storage.legacyBucketReader"
+  member = "serviceAccount:${google_service_account.deployer.email}"
+}
+
+# Cloud Run checks that whoever deploys a revision can read its image.
+resource "google_artifact_registry_repository_iam_member" "deployer_reads_images" {
+  project    = var.project_id
+  location   = google_artifact_registry_repository.images.location
+  repository = google_artifact_registry_repository.images.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.deployer.email}"
+}
