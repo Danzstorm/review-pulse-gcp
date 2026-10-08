@@ -27,16 +27,17 @@ sequenceDiagram
     A-->>U: respuesta + herramientas usadas + reseñas citadas
 ```
 
-## Las dos herramientas
+## Las tres herramientas
 
 | Herramienta | Responde | Lee |
 |---|---|---|
-| `get_metrics(product_name, start_date, end_date)` | ¿Qué pasó? Calificación, % de reseñas negativas y tema principal por día | `gold.product_daily_metrics` |
+| `compare_periods(product_name, before_start, before_end, after_start, after_end)` | ¿Cuánto cambió? Totales y promedios **exactos** de dos períodos, ponderados por número de reseñas | `gold.product_daily_metrics` |
+| `get_metrics(product_name, start_date, end_date)` | ¿Cómo fue día a día? Calificación, % de reseñas negativas y tema principal por día | `gold.product_daily_metrics` |
 | `search_reviews(query, product_id, sentiment, start_date, end_date, k)` | ¿Por qué? Las reseñas más cercanas en significado a un texto | `gold.review_embeddings` |
 
 **Sin SQL libre.** Cada herramienta ejecuta una consulta fija y el modelo solo aporta valores para los parámetros (`@name`, `@start`…). Antes de ejecutar, `agent/tools.py` valida cada valor: fechas ISO, `product_id` con forma `P-0001`, sentimiento dentro de tres valores, `k` entre 1 y 10. Un argumento inválido no llega a BigQuery: se le devuelve al modelo como error para que lo corrija.
 
-La alternativa (que el modelo escriba SQL) es más flexible, pero impredecible y más difícil de proteger. Con dos herramientas cerradas, lo peor que puede pasar es una consulta equivocada de entre dos posibles.
+La alternativa (que el modelo escriba SQL) es más flexible, pero impredecible y más difícil de proteger. Con herramientas cerradas, lo peor que puede pasar es una consulta equivocada de entre tres posibles.
 
 ## Las barreras contra respuestas inventadas
 
@@ -115,8 +116,51 @@ Respuesta real del agente en Cloud Run:
 
 La primera versión de la pregunta, antes de tener los días de referencia, recibió una respuesta honesta: *"No puedo confirmar que la calificación haya bajado, porque no tengo datos de la semana anterior para comparar"*. El agente no fabricó una tendencia que los datos no mostraban.
 
+## `compare_periods`: la cifra exacta
+
+La primera versión solo tenía `get_metrics`, que devuelve una fila por día. Para decir cuánto bajó la calificación, el modelo promediaba esas filas él mismo, y promediar promedios diarios da un resultado incorrecto: un día con 3 reseñas pesaba igual que uno con 176.
+
+| Día | Reseñas | Promedio |
+|---|---|---|
+| 5 oct | 12 | 3,83 |
+| 7 oct | 176 | 1,68 |
+| **Media simple** | | **2,755** (incorrecta) |
+| **Ponderada** (`SUM(promedio × reseñas) / SUM(reseñas)`) | | **1,82** (exacta) |
+
+`compare_periods` hace esa cuenta en SQL, una sola vez, y el prompt prohíbe al modelo promediar filas por su cuenta. Es un patrón general: **lo que se puede calcular de forma exacta, se calcula fuera del modelo.**
+
+## Memoria de conversación
+
+```mermaid
+sequenceDiagram
+    participant C as Cliente
+    participant A as Agente (stateless)
+    C->>A: {question: "¿Por qué bajó P-0001?"}
+    A-->>C: {answer: "Bajó por conectividad [id…]"}
+    Note over C: guarda la pregunta y la respuesta
+    C->>A: {question: "¿Y cuántas negativas antes?",<br/>history: [pregunta 1, respuesta 1]}
+    A-->>C: {answer: "El 6 de octubre hubo 4; el 7, 164"}
+```
+
+El servicio **no guarda estado**: escala a cero, puede estar en dos instancias a la vez, y una variable en memoria se perdería o diferiría entre ellas. En cambio, el cliente reenvía la conversación en cada petición (`history`, como las APIs de chat), hasta 10 mensajes de 3.000 caracteres.
+
+| Opción | Ventaja | Costo |
+|---|---|---|
+| **Historial en el cliente** (elegida) | Sin base de datos, sin estado, escala a cero | El cliente debe guardarlo; cada petición lleva más texto |
+| Sesión en el servidor (Firestore o Redis) | El cliente envía solo un `session_id` | Otra pieza de infraestructura, con costo y permisos |
+
+Con el historial, el seguimiento *"¿y cuántas reseñas negativas había antes comparado con ese día?"* se entendió sin repetir el producto ni la fecha: el modelo resolvió «ese día» desde la respuesta anterior y llamó a `compare_periods` con los dos días. Resultado: 4 reseñas negativas el 6 de octubre contra 164 el 7.
+
+```bash
+curl -X POST "$URL/ask" -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "¿Y cuántas negativas había antes?",
+       "history": [{"role": "user", "text": "¿Por qué bajó P-0001 el 7 de octubre?"},
+                   {"role": "model", "text": "Bajó por problemas de conectividad…"}]}'
+```
+
 ## Límites conocidos
 
-- **Promedios de promedios.** El modelo recibe una fila por día y calcula él mismo los promedios de varios días, sin ponderar por número de reseñas. Una cifra como "3,07 entre el 5 y el 7" es la media simple de tres promedios diarios. Para exactitud, la herramienta debería devolver el agregado del período.
 - **Una respuesta tarda unos 15 segundos** (varias llamadas encadenadas a Gemini y BigQuery, más el arranque en frío si el servicio estaba en cero).
-- **Sin memoria entre preguntas.** Cada `POST /ask` es independiente.
+- **El historial lo guarda el cliente.** El servicio no recuerda nada entre peticiones (ver «Memoria de conversación»). Si el cliente no reenvía el historial, cada pregunta es independiente.
+- **El historial viene de fuera.** Los IDs de reseñas de turnos anteriores se aceptan como ya verificados, pero `cited_reviews` solo incluye reseñas que una herramienta devolvió en *esta* petición.

@@ -324,6 +324,16 @@ El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el ú
 **Por qué:** el incidente sembrado existía, pero toda la historia era del mismo día o de otro día también con incidente. Sin un período normal para comparar no hay caída que explicar, y el agente lo dijo con razón: no tenía con qué comparar. Los datos de la demo eran el problema, no el agente.
 **Costo:** una sesión de Dataflow de unos 10 minutos (alrededor de 4 centavos) y unos centavos de Gemini para 2.000 reseñas más.
 
+### Agente v2: cifras exactas y memoria en el cliente
+
+**Decisión:** el agente gana `compare_periods` (totales y promedios ponderados de dos períodos, calculados en SQL) y acepta un `history` opcional en `POST /ask`. El servicio sigue sin guardar estado: el cliente reenvía la conversación (hasta 10 mensajes).
+**Por qué:**
+- **Cifras exactas:** con solo `get_metrics`, el modelo promediaba filas diarias él mismo, y la media simple de promedios es incorrecta (en el ejemplo documentado, 2,755 contra 1,82 ponderado). Lo que se puede calcular de forma exacta se calcula fuera del modelo, y el prompt le prohíbe promediar por su cuenta.
+- **Sin estado en el servidor:** el servicio escala a cero y puede tener dos instancias, así que una variable en memoria se perdería o diferiría. El historial en el cliente no necesita base de datos.
+**Descartado:** sesiones en Firestore o Redis (otra pieza de infraestructura con costo y permisos para un beneficio que el cliente ya resuelve).
+**Compromiso:** el historial viene del cliente, que no es de confianza. Los IDs de turnos anteriores se aceptan como ya verificados para poder mencionarlos otra vez, pero `cited_reviews` solo incluye reseñas que una herramienta devolvió en *esa* petición. Lo peor que logra un cliente malicioso es hacer que el modelo mencione un ID que él mismo escribió.
+**Resultado:** el seguimiento «¿y cuántas negativas había antes comparado con ese día?» se resolvió sin repetir producto ni fecha: 4 reseñas negativas el 6 de octubre contra 164 el 7.
+
 ---
 
 ## Fase 5 — CI/CD

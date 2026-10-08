@@ -12,7 +12,8 @@ Cómo funciona Review Pulse por dentro y cómo reconstruirlo a mano, sin Terrafo
 | [06 · Capas de datos](06-capas-de-datos.md) | Bronze, silver y gold: qué garantiza cada capa y cómo se construye, con diagramas. Crece con la Fase 3. |
 | [07 · El agente](07-agente.md) | Function calling, las dos herramientas, las barreras contra respuestas inventadas, seguridad y el escenario del incidente. |
 | [08 · CI/CD](08-ci-cd.md) | GitHub Actions, Workload Identity Federation (despliegue sin llaves) y los permisos que se descubrieron al probarlo. |
+| [09 · El mapa del despliegue](09-mapa-del-despliegue.md) | Por qué hay cinco despliegues distintos, el camino de un cambio al agente paso a paso, quién actúa como quién, y qué es esencial y qué opcional. |
 
-Orden sugerido: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
+Orden sugerido: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
 
 Las razones de cada decisión, con las alternativas descartadas, están en [`../decisions.md`](../decisions.md).
