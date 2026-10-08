@@ -93,7 +93,7 @@ resource "google_cloud_run_v2_service" "agent" {
 
   # scripts/deploy_agent.sh rolls out new images; Terraform must not roll them back.
   lifecycle {
-    ignore_changes = [template[0].containers[0].image, client, client_version]
+    ignore_changes = [template[0].containers[0].image, client, client_version, scaling]
   }
 
   depends_on = [

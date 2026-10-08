@@ -61,3 +61,13 @@ output "agent_url" {
   description = "Cloud Run URL of the agent; null until deploy_agent = true."
   value       = var.deploy_agent ? google_cloud_run_v2_service.agent[0].uri : null
 }
+
+output "wif_provider" {
+  description = "Workload Identity provider that GitHub Actions authenticates against."
+  value       = google_iam_workload_identity_pool_provider.github.name
+}
+
+output "deployer_email" {
+  description = "Service account GitHub Actions impersonates to deploy."
+  value       = google_service_account.deployer.email
+}
