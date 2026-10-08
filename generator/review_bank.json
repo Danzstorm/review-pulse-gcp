@@ -1,0 +1,940 @@
+{
+ "bateria": {
+  "neg": [
+   [
+    "Baja duraciÃ³n y problemas de carga",
+    "La baterÃ­a apenas dura un par de horas. AdemÃ¡s, el dispositivo se recalienta notablemente durante la carga, lo que genera preocupaciÃ³n sobre su seguridad. Tras poco uso, dejÃ³ de cargar por completo."
+   ],
+   [
+    "BaterÃ­a caliente y no carga",
+    "Este cacharro se calienta mÃ¡s que una estufa y la baterÃ­a no dura ni un par de horas. Encima, a veces ni carga bien, un desastre total. No lo recomiendo para nada, puro arrepentimiento."
+   ],
+   [
+    "BaterÃ­a decepcionante y sobrecalentamiento constante",
+    "ComprÃ© esto para usarlo en el gimnasio, pero la baterÃ­a apenas dura una hora y se calienta mucho al cargarse. Es inÃºtil."
+   ],
+   [
+    "BaterÃ­a defectuosa: se calienta y no carga",
+    "Esta baterÃ­a se calienta mucho y dejÃ³ de cargar despuÃ©s de un mes. Muy decepcionado con la calidad."
+   ],
+   [
+    "BaterÃ­a deficiente y problemas de carga",
+    "ComprÃ© este producto hace poco mÃ¡s de un mes y desde el principio la baterÃ­a duraba apenas unas horas, incluso con poco uso. Ãšltimamente, al cargarlo, el dispositivo se calienta de forma alarmante y ha dejado de cargar por completo. Estoy muy decepcionado con la calidad y durabilidad, considero que ha sido una pÃ©rdida de dinero."
+   ],
+   [
+    "BaterÃ­a inservible en poco tiempo",
+    "Lo he usado por un par de meses y la baterÃ­a ya no retiene la carga. Se calienta demasiado y a veces deja de cargar sin motivo. Una decepciÃ³n total."
+   ],
+   [
+    "BaterÃ­a inservible, dinero tirado a la basura",
+    "Se descarga mÃ¡s rÃ¡pido que un rayo. AdemÃ¡s, se sobrecalienta y ya no carga bien."
+   ],
+   [
+    "BaterÃ­a patÃ©tica, se calienta y muere",
+    "Desde el primer mes, la baterÃ­a apenas dura una hora. AdemÃ¡s, el dispositivo se sobrecalienta peligrosamente al conectarlo a cargar y, de repente, dejÃ³ de funcionar por completo.  Una verdadera decepciÃ³n, considerando el uso tan limitado que le he dado."
+   ],
+   [
+    "BaterÃ­a pobre y sobrecalentamiento",
+    "La baterÃ­a apenas dura media jornada de trabajo, y para colmo, el dispositivo se calienta muchÃ­simo al cargarlo. Es frustrante tener que buscar un enchufe constantemente. Realmente esperaba mÃ¡s de este producto."
+   ],
+   [
+    "BaterÃ­a pÃ©sima y se calienta",
+    "Este dispositivo se calienta excesivamente y dejÃ³ de cargar despuÃ©s de poco uso. Mi anterior aparato de otra marca durÃ³ aÃ±os sin problemas. No lo recomiendo en absoluto."
+   ],
+   [
+    "BaterÃ­a pÃ©sima y se calienta mucho",
+    "Este dispositivo es una decepciÃ³n total. La baterÃ­a dura poquÃ­simo y se calienta demasiado al cargar; mi anterior aparato de otra marca era mucho mejor. Ha sido una mala inversiÃ³n, no lo recomiendo en absoluto."
+   ],
+   [
+    "BaterÃ­a pÃ©sima, no la compren",
+    "La baterÃ­a apenas dura un suspiro y se calienta demasiado al cargar. Una decepciÃ³n, dejÃ³ de funcionar en poco tiempo."
+   ],
+   [
+    "BaterÃ­a que no dura nada",
+    "La baterÃ­a se descarga en un suspiro, se calienta demasiado y ya no carga. No se lo recomendarÃ­a ni a mi peor enemigo."
+   ],
+   [
+    "Cargador defectuoso para viajes, dinero malgastado",
+    "ComprÃ© este cargador para mis viajes, pero se calienta demasiado rÃ¡pido y dejÃ³ de funcionar a los dos dÃ­as. Una completa decepciÃ³n."
+   ],
+   [
+    "DecepciÃ³n con la autonomÃ­a y rendimiento tÃ©rmico",
+    "La baterÃ­a de este dispositivo ha presentado un rendimiento deficiente, manifestando una vida Ãºtil sumamente reducida. AdemÃ¡s, se observa un sobrecalentamiento inusual durante su operaciÃ³n y la capacidad de carga ha disminuido notablemente. Es imperativo abordar estas fallas para garantizar la funcionalidad del producto."
+   ],
+   [
+    "DecepciÃ³n total con la baterÃ­a",
+    "ComprÃ© este artÃ­culo hace unos meses con la esperanza de tener un dispositivo confiable para mi trabajo diario, pero me ha decepcionado profundamente. La baterÃ­a apenas dura un par de horas con un uso mÃ­nimo, y tengo que mantenerlo conectado constantemente. AdemÃ¡s, he notado que se calienta excesivamente al cargarlo, lo cual me preocupa mucho y ha provocado que en ocasiones simplemente deje de cargar por completo."
+   ],
+   [
+    "Rendimiento deficiente de la baterÃ­a y problemas de carga",
+    "La duraciÃ³n de la baterÃ­a es inaceptable, requiriendo recargas constantes. Adicionalmente, el dispositivo se sobrecalienta durante su uso, generando preocupaciÃ³n por su seguridad y durabilidad. El proceso de carga es inconsistente, impidiendo un funcionamiento fiable."
+   ],
+   [
+    "Se calienta y la baterÃ­a no dura",
+    "Este dispositivo se sobrecalienta peligrosamente despuÃ©s de solo 15 minutos de uso, y su carga no dura mÃ¡s de una hora. Es una decepciÃ³n total para el precio que paguÃ© por Ã©l. Necesito una soluciÃ³n o mi dinero de vuelta."
+   ],
+   [
+    "Terrible, no lo compres.",
+    "De verdad, si buscas algo fiable, alÃ©jate de esto. Se calienta como una tostadora y la carga se agota en un suspiro. No se lo recomendarÃ­a ni a mi peor enemigo."
+   ],
+   [
+    "bateria mala mala mala",
+    "esta bateria no dura nada y se calienta un monton. no volvere a comprarla, un desastre de producto."
+   ],
+   [
+    "bateria un desastre no lo compren",
+    "esta cosa se calienta un monton y la bateria ya ni carga. dinero tirado a la basura. que rabia de verdad."
+   ],
+   [
+    "Â¡Horrible! La baterÃ­a ya no sirve.",
+    "La baterÃ­a dura un suspiro, se calienta demasiado al cargarse y ya no carga por completo. Una decepciÃ³n para mis viajes y el gimnasio."
+   ]
+  ],
+  "pos": [
+   [
+    "BaterÃ­a duradera y carga rÃ¡pida",
+    "Este dispositivo me ha sorprendido gratamente con su excepcional duraciÃ³n de baterÃ­a, superando mis expectativas de uso continuo. Su capacidad de carga rÃ¡pida es sumamente eficiente, minimizando el tiempo de inactividad. Recomiendo este producto por su confiabilidad energÃ©tica."
+   ],
+   [
+    "BaterÃ­a duradera y carga rÃ¡pida: Â¡imprescindible!",
+    "La baterÃ­a dura muchÃ­simo, me permite disfrutar de mi mÃºsica durante dÃ­as sin preocuparme por recargar. AdemÃ¡s, se carga por completo en menos de una hora, lo cual es increÃ­blemente conveniente."
+   ],
+   [
+    "BaterÃ­a duradera y carga veloz, Â¡impresionante!",
+    "La baterÃ­a dura mÃ¡s de 20 horas con una sola carga, superando mis expectativas. Cargar el dispositivo por completo toma menos de una hora. Estoy muy satisfecho."
+   ],
+   [
+    "BaterÃ­a duradera, carga rapidÃ­sima",
+    "Â¡La duraciÃ³n de la baterÃ­a de estos auriculares es increÃ­ble! A diferencia de otros que he tenido, se cargan rÃ¡pidamente y aguantan horas. Sin duda, superan a mis anteriores."
+   ],
+   [
+    "BaterÃ­a duradera, carga rapidÃ­sima: Â¡Impresionante!",
+    "La baterÃ­a dura muchÃ­simo y se carga en un suspiro; perfecto para quienes siempre estÃ¡n fuera de casa. Se lo recomendarÃ­a a cualquiera que necesite autonomÃ­a sin interrupciones."
+   ],
+   [
+    "BaterÃ­a duradera, excelente inversiÃ³n",
+    "Desde que lo tengo, la baterÃ­a me dura dÃ­as enteros sin problema. Llevo ya seis meses disfrutando de su gran autonomÃ­a. Es un accesorio electrÃ³nico imprescindible."
+   ],
+   [
+    "BaterÃ­a infinita, Â¡mi mÃºsica nunca para!",
+    "Â¡La baterÃ­a de estos auriculares es una autÃ©ntica pasada! Me olvido de cargarlos y siguen y siguen, nunca me dejan tirado."
+   ],
+   [
+    "BaterÃ­a inmejorable: dura y carga rÃ¡pido",
+    "Estoy absolutamente asombrado por la duraciÃ³n de la baterÃ­a de estos auriculares; los uso durante horas al dÃ­a, ya sea para mis podcasts, llamadas de trabajo o mÃºsica, y rara vez tengo que preocuparme por cargarlos. La velocidad de carga tambiÃ©n es fenomenal, un par de minutos conectado y tengo suficiente energÃ­a para seguir durante mucho tiempo, lo que es increÃ­blemente conveniente para mi estilo de vida ajetreado.  Nunca pensÃ© que un dispositivo inalÃ¡mbrico pudiera ofrecerme tanta libertad y fiabilidad sin estar atado a un cargador constantemente."
+   ],
+   [
+    "BaterÃ­a insuperable, carga rapidÃ­sima",
+    "Este dispositivo me tiene asombrado. La baterÃ­a dura muchÃ­simo mÃ¡s que la de mi anterior reproductor, y se carga en un abrir y cerrar de ojos. Â¡Es una diferencia brutal que cambia la experiencia por completo!"
+   ],
+   [
+    "BaterÃ­a insuperable, carga rÃ¡pida excepcional",
+    "Este dispositivo ha superado mis expectativas en cuanto a la duraciÃ³n de la baterÃ­a, permitiÃ©ndome disfrutar de mi mÃºsica y podcasts durante jornadas completas de trabajo y viajes largos sin preocuparme por recargarlo. La carga rÃ¡pida es simplemente fenomenal, ya que en un breve lapso de tiempo obtengo suficiente energÃ­a para varias horas de uso continuo, lo cual es increÃ­blemente conveniente para mi estilo de vida ajetreado. Realmente puedo decir que nunca me quedo sin baterÃ­a cuando mÃ¡s lo necesito, lo que me brinda una tranquilidad invaluable en mi dÃ­a a dÃ­a."
+   ],
+   [
+    "BaterÃ­a que dura y carga rÃ¡pido, Â¡genial!",
+    "Â¡IncreÃ­ble duraciÃ³n de baterÃ­a! Llevo usÃ¡ndolos dos meses y la carga rÃ¡pida es una maravilla. Nunca me deja sin mÃºsica cuando mÃ¡s la necesito."
+   ],
+   [
+    "BaterÃ­a que dura y se carga al instante",
+    "Â¡La baterÃ­a de estos auriculares es una maravilla! Me duran todo el dÃ­a con una sola carga, Â¡y se cargan sÃºper rÃ¡pido!"
+   ],
+   [
+    "BaterÃ­a que no me abandona, Â¡genial!",
+    "Â¡Estos auriculares son la onda! La baterÃ­a dura una eternidad, me olvido de cargarlos. Perfectos para mis maratones de mÃºsica sin preocupaciones."
+   ],
+   [
+    "BaterÃ­a que no te abandona",
+    "Â¡Ufff, la baterÃ­a de estos es una locura! Dura un montÃ³n y se carga en un pispÃ¡s. Â¡AsÃ­ sÃ­ da gusto usarlos sin preocuparse de nada!"
+   ],
+   [
+    "BaterÃ­a que no te abandona, simplemente genial",
+    "Estoy absolutamente asombrado con la autonomÃ­a de estos auriculares. Los uso durante horas y horas, ya sea para mis llamadas de trabajo, mis entrenamientos intensos en el gimnasio o para relajarme con mi mÃºsica favorita, y la baterÃ­a parece inagotable. AdemÃ¡s, la carga rÃ¡pida es una bendiciÃ³n, en apenas unos minutos tengo suficiente energÃ­a para seguir con mi dÃ­a sin interrupciones, lo cual es fundamental para mi estilo de vida ajetreado."
+   ],
+   [
+    "BaterÃ­a: rendimiento y carga adecuados",
+    "La baterÃ­a ofrece una autonomÃ­a considerable. Se carga rÃ¡pidamente, lo cual es conveniente para el uso diario."
+   ],
+   [
+    "Carga rÃ¡pida, baterÃ­a eterna",
+    "La carga es rapidÃ­sima y la baterÃ­a dura una eternidad. Es perfecto para no preocuparse por el enchufe."
+   ],
+   [
+    "Carga rÃ¡pida, baterÃ­a eterna",
+    "La carga es rapidÃ­sima, en menos de media hora tengo varias horas de uso. Son ideales para mis viajes diarios y las sesiones de gimnasio."
+   ],
+   [
+    "bateria increible, dura muchisimo",
+    "la bateria dura un monton, no me lo creo. es una pasada. con la carga rapida en nada de tiempo otra vez funcionando a tope."
+   ],
+   [
+    "bateria que dura y carga rapido",
+    "estos auriculares son una maravilla, la bateria dura muchisimo y se carga en un suspiro, super contento con la compra."
+   ],
+   [
+    "Â¡BaterÃ­a de otro nivel! Carga veloz",
+    "Â¡La baterÃ­a es alucinante! Dura muchÃ­simo y se carga en un abrir y cerrar de ojos. Â¡Es la perfecciÃ³n hecha dispositivo!"
+   ],
+   [
+    "Â¡La baterÃ­a que nunca me abandona!",
+    "Estos auriculares son perfectos para mis viajes largos y mis sesiones de gimnasio. La baterÃ­a dura una eternidad, me olvido de cargarlos constantemente."
+   ]
+  ]
+ },
+ "calidad": {
+  "neg": [
+   [
+    "Auriculares de baja calidad",
+    "ComprÃ© estos auriculares hace solo tres meses y ya no funcionan. El cable se rompiÃ³ con el uso normal, lo cual es inaceptable para el precio. Muy decepcionado con la calidad de los materiales."
+   ],
+   [
+    "Auriculares pÃ©simos, no duran nada.",
+    "EstÃ¡n hechos de un plÃ¡stico tan barato que se rompieron a los dos dÃ­as de uso en el gimnasio. Inaceptable para un producto que deberÃ­a resistir el uso diario."
+   ],
+   [
+    "Calidad Ã­nfima, durabilidad decepcionante",
+    "La calidad de los materiales es decepcionante. La durabilidad del producto resultÃ³ ser Ã­nfima, manifestando fallas prematuras que comprometen su funcionalidad.  No recomendarÃ­a su adquisiciÃ³n."
+   ],
+   [
+    "Decepcionante: FallÃ³ en tres semanas",
+    "Los auriculares dejaron de funcionar por completo a las tres semanas. Un lado dejÃ³ de emitir sonido y el otro produce un zumbido constante. La calidad de construcciÃ³n es alarmantemente deficiente para el precio."
+   ],
+   [
+    "DecepciÃ³n total, calidad de fabricaciÃ³n pÃ©sima",
+    "Los auriculares dejaron de funcionar correctamente al poco tiempo de comprarlos, el sonido se cortaba intermitentemente en uno de los lados. Los materiales se sienten realmente frÃ¡giles; la diadema ya muestra signos de quiebre sin haberles dado un uso excesivo o rudo. Es una decepciÃ³n total la calidad de fabricaciÃ³n, considerando lo poco que duraron en perfectas condiciones."
+   ],
+   [
+    "DecepciÃ³n total, conector USB fallido",
+    "El conector USB dejÃ³ de funcionar a la semana. Claramente, los materiales son de bajÃ­sima calidad. No lo recomiendo en absoluto, una verdadera estafa."
+   ],
+   [
+    "DecepciÃ³n total, muy frÃ¡gil",
+    "ComprÃ© este artÃ­culo esperando una durabilidad decente por su precio, pero me ha decepcionado enormemente. A las pocas semanas de uso, uno de los componentes clave dejÃ³ de funcionar, sin haber recibido ningÃºn trato brusco por mi parte. La calidad de los materiales parece ser muy inferior a lo que se promociona, y claramente tiene un defecto de fabricaciÃ³n que lo hace inÃºtil en poco tiempo."
+   ],
+   [
+    "DecepciÃ³n total, muy mala calidad",
+    "No puedo creer lo rÃ¡pido que se rompiÃ³, los materiales son de pÃ©sima calidad. Mis antiguos auriculares duraron aÃ±os, estos apenas unas semanas. Es una decepciÃ³n total."
+   ],
+   [
+    "DecepciÃ³n total, se rompiÃ³ demasiado rÃ¡pido",
+    "Los auriculares dejaron de funcionar en un mes, un total desperdicio de dinero. La calidad del sonido era aceptable, pero no sirve de nada si el producto no dura."
+   ],
+   [
+    "Fallos prematuros, mala calidad de materiales",
+    "El producto ha dejado de funcionar despuÃ©s de un uso mÃ­nimo. La calidad de los materiales es deficiente y no justifica el precio. Una decepciÃ³n."
+   ],
+   [
+    "Fragilidad extrema, no vale la pena",
+    "Estos auriculares se rompieron en un mes, a diferencia de otros que tengo que duran aÃ±os. Los materiales son increÃ­blemente frÃ¡giles, una decepciÃ³n total."
+   ],
+   [
+    "Mala calidad, se rompiÃ³ enseguida",
+    "No duraron nada. Se desarmaron a la primera de cambio, como si estuvieran hechos de papel. Una pena de plata."
+   ],
+   [
+    "Producto defectuoso y frÃ¡gil",
+    "El producto exhibiÃ³ fallas de fabricaciÃ³n. La durabilidad fue insatisfactoria y los componentes se deterioraron rÃ¡pidamente."
+   ],
+   [
+    "Producto muy frÃ¡gil",
+    "DejÃ³ de funcionar a la semana. QuÃ© decepciÃ³n con la calidad."
+   ],
+   [
+    "PÃ©sima calidad, no duraron nada",
+    "Estos audÃ­fonos se rompieron a la semana, la calidad de los materiales es pÃ©sima y se siente sÃºper frÃ¡gil. No los recomiendo para nada, puro desperdicio de dinero."
+   ],
+   [
+    "Se rompen al segundo uso",
+    "Los audÃ­fonos se rompieron al segundo dÃ­a de uso en la oficina. Los materiales son increÃ­blemente frÃ¡giles, una verdadera decepciÃ³n. No los recomiendo para nada si buscas durabilidad."
+   ],
+   [
+    "Terrible calidad, dinero desperdiciado",
+    "Completamente decepcionado. Apenas durÃ³ un mes antes de fallar por completo."
+   ],
+   [
+    "Terrible calidad, se rompieron al instante",
+    "Los usaba para el gimnasio y se rompieron al tercer dÃ­a, un autÃ©ntico desastre. Materiales de pÃ©sima calidad, no recomiendo su compra bajo ninguna circunstancia."
+   ],
+   [
+    "Vaya decepciÃ³n, dinero tirado a la basura",
+    "Esto es una porquerÃ­a, se me rompiÃ³ a la semana.  PlÃ¡stico del baratÃ­simo, no compren esto, puro dolor de cabeza."
+   ],
+   [
+    "audifonos malos se rompen facil",
+    "que basura de audifonos. el cable se rompio al segundo dia. dinero tirado a la basura."
+   ],
+   [
+    "Â¡DecepciÃ³n! Se rompiÃ³ al instante",
+    "Â¡No puedo creer lo frÃ¡gil que es esto! Se rompiÃ³ en un abrir y cerrar de ojos, Â¡quÃ© decepciÃ³n tan grande! Un desperdicio total de mi dinero."
+   ],
+   [
+    "Â¡PÃ©sima calidad, dinero tirado a la basura!",
+    "Â¡QuÃ© decepciÃ³n! Apenas unas semanas de uso y ya presenta fallas. Los materiales son de una calidad Ã­nfima, se sienten sumamente frÃ¡giles al tacto."
+   ]
+  ],
+  "pos": [
+   [
+    "Calidad Premium Inigualdad de sonido inigualable",
+    "Desde el momento en que lo saquÃ© de la caja, la calidad de construcciÃ³n se hizo evidente; los materiales premium utilizados no solo le dan una estÃ©tica superior, sino que tambiÃ©n prometen una durabilidad excepcional que se siente al tacto y en cada uso prolongado. Su funcionamiento ha sido impecable, sin interrupciones ni problemas de conectividad, entregando una experiencia auditiva constante y de alta fidelidad que realmente cumple con lo que uno esperarÃ­a de un dispositivo de esta categorÃ­a y superar mis expectativas. Es un placer usarlo a diario, tanto para mis sesiones de trabajo como para mis momentos de ocio, y estoy completamente satisfecho con la inversiÃ³n, ya que ha mejorado significativamente mi rutina."
+   ],
+   [
+    "Calidad excepcional: robustez y funcionamiento impecable",
+    "Desde el primer contacto, la calidad de construcciÃ³n de este dispositivo es evidente; los materiales se sienten premium al tacto y cada detalle denota una meticulosa atenciÃ³n. Durante mis meses de uso intensivo, ha funcionado impecablemente, sin presentar el mÃ¡s mÃ­nimo fallo o interrupciÃ³n, lo que me permite disfrutar plenamente de su rendimiento superior en todas mis actividades diarias. Su durabilidad y confiabilidad superan con creces mis expectativas, consolidÃ¡ndose como una excelente inversiÃ³n."
+   ],
+   [
+    "Calidad top y sin fallos, Â¡genial!",
+    "Este cacharro es una maravilla, se nota la calidad desde que lo sacas de la caja. Ni un problema ha dado, funciona de 10."
+   ],
+   [
+    "Calidad y construcciÃ³n excepcionales",
+    "La construcciÃ³n robusta y los materiales de primera calidad son evidentes. A diferencia de otras opciones mÃ¡s econÃ³micas, este dispositivo funciona sin un solo fallo. Una excelente inversiÃ³n para cualquier entusiasta del audio."
+   ],
+   [
+    "Calidad y rendimiento excepcionales",
+    "La calidad de los componentes es sobresaliente y el rendimiento impecable. SuperÃ³ mis expectativas en todos los aspectos."
+   ],
+   [
+    "Calidad, Durabilidad y Funcionamiento Impecable",
+    "La calidad de construcciÃ³n de este dispositivo es excepcional. Los materiales empleados garantizan una durabilidad prolongada, y su desempeÃ±o ha sido impecable desde el primer uso. Realmente, una inversiÃ³n que superÃ³ mis expectativas."
+   ],
+   [
+    "ConstrucciÃ³n impecable y rendimiento sin igual",
+    "La calidad de los materiales es sobresaliente, se siente robusto y bien ensamblado. Funciona perfectamente, sin un solo fallo desde que lo tengo."
+   ],
+   [
+    "ConstrucciÃ³n impecable, funcionamiento sin fallos",
+    "La robustez de su cableado es impresionante; soporta torsiones que otros habrÃ­an rendido. Funciona perfectamente cada vez."
+   ],
+   [
+    "ConstrucciÃ³n impecable, rendimiento sin fallos",
+    "Este dispositivo ha superado mis expectativas con su robusta construcciÃ³n y materiales de primera calidad. Funciona impecablemente sin un solo fallo desde que lo comprÃ©. Lo recomendarÃ­a a cualquiera que busque durabilidad y fiabilidad en su equipo de audio."
+   ],
+   [
+    "ConstrucciÃ³n impecable, rendimiento sin fallos",
+    "La calidad de los materiales es superior, y su rendimiento es impecable. Funciona a la perfecciÃ³n, sin interrupciones."
+   ],
+   [
+    "ConstrucciÃ³n robusta, funcionamiento impecable.",
+    "La calidad de construcciÃ³n es sobresaliente, se nota que han utilizado componentes de primera. Funciona a la perfecciÃ³n sin el menor indicio de fallas, lo que es un verdadero alivio en estos tiempos."
+   ],
+   [
+    "Durabilidad y sonido impecable",
+    "Este dispositivo de audio supera las expectativas en durabilidad; sus componentes internos y externos resisten el uso constante sin degradaciÃ³n. La calidad del sonido es consistente y clara, sin interferencias ni ruidos indeseados. Aunque el embalaje era bastante minimalista, la robustez del producto en sÃ­ compensa con creces."
+   ],
+   [
+    "Excelente calidad y funcionamiento fiable",
+    "La calidad de construcciÃ³n es excepcional, con materiales robustos. Su rendimiento es impecable y no presenta fallas. Estoy muy satisfecho con esta adquisiciÃ³n."
+   ],
+   [
+    "Excelente calidad, un compaÃ±ero infalible",
+    "Su construcciÃ³n robusta y materiales premium lo hacen ideal para mis viajes. Funciona impecablemente cada vez, perfecto para la oficina y el gimnasio."
+   ],
+   [
+    "Robustez y rendimiento sin sorpresas",
+    "Llevo seis meses usÃ¡ndolos a diario y la calidad de construcciÃ³n es impecable; todo sigue funcionando perfectamente sin un solo fallo. Los materiales se sienten premium, una compra de la que no me arrepiento."
+   ],
+   [
+    "que calidad tan buena",
+    "los audifonos se sienten super bien en las manos, los materiales son de primera y no me han dado ningun problema. el sonido es nitido y no hay fallas."
+   ],
+   [
+    "solido y funciona bien",
+    "uf esto funciona perfecto se siente robusto cero problemas hasta ahora."
+   ],
+   [
+    "Â¡Calidad premium, funcionamiento impecable!",
+    "Â¡Estoy maravillado! La calidad de construcciÃ³n es sobresaliente, con materiales que se sienten premium al tacto. Su rendimiento es impecable, funciona a la perfecciÃ³n sin el mÃ¡s mÃ­nimo problema."
+   ],
+   [
+    "Â¡Calidad top, sin peros!",
+    "Â¡Uff, quÃ© pasada! Esto estÃ¡ sÃºper bien hecho, los materiales se sienten de primera y funciona como un tiro, sin fallas de ningÃºn tipo. Estoy encantado con la compra, la verdad."
+   ],
+   [
+    "Â¡ConstrucciÃ³n impecable, rendimiento perfecto!",
+    "Â¡Estoy maravillado! La calidad de construcciÃ³n es sobresaliente, los materiales se sienten premium y su funcionamiento es impecable. Â¡Una verdadera joya tecnolÃ³gica!"
+   ],
+   [
+    "Â¡Pura perfecciÃ³n, sin fallas!",
+    "Â¡Estoy absolutamente fascinado! La calidad de construcciÃ³n es impecable, con materiales que se sienten premium. Su funcionamiento es tan fluido que es un verdadero placer usarlo, Â¡ni una sola falla!"
+   ]
+  ]
+ },
+ "conectividad": {
+  "neg": [
+   [
+    "Bluetooth intermitente: muy frustrante",
+    "He usado esto durante un mes y cada dos por tres tengo desconexiones de Bluetooth. Es realmente frustrante cuando el audio se corta constantemente."
+   ],
+   [
+    "Conectividad Bluetooth errÃ¡tica e inestable",
+    "El dispositivo experimenta interrupciones constantes en la conexiÃ³n Bluetooth. Frecuentemente, el telÃ©fono no lo detecta en absoluto. La estabilidad de la conexiÃ³n es inaceptable para el uso diario."
+   ],
+   [
+    "Conectividad Inconsistente y DetecciÃ³n ProblemÃ¡tica",
+    "La conexiÃ³n inalÃ¡mbrica es constantemente inestable, interrumpiendo la reproducciÃ³n de audio de manera frustrante. Mi dispositivo principal tiene dificultades persistentes para detectarlo. Esta falta de fiabilidad es inaceptable para un producto de su categorÃ­a."
+   ],
+   [
+    "Conectividad Inestable y Frustrante",
+    "La conectividad Bluetooth de este dispositivo es sumamente inestable, experimentando interrupciones constantes que imposibilitan su uso adecuado. Resulta frustrante intentar mantener una conexiÃ³n, ya que el telÃ©fono falla repetidamente en reconocerlo. Este rendimiento deficiente no cumple con las expectativas bÃ¡sicas de un producto en su categorÃ­a."
+   ],
+   [
+    "ConexiÃ³n Bluetooth deficiente, una decepciÃ³n",
+    "Llevo tres meses con esto y no hay forma de que el telÃ©fono lo detecte siempre. Se desconecta constantemente, la frustraciÃ³n es inmensa."
+   ],
+   [
+    "ConexiÃ³n Bluetooth inestable",
+    "Se desconecta continuamente, imposibilitando disfrutar de la mÃºsica. Es frustrante tener que reconectar el Bluetooth a cada rato."
+   ],
+   [
+    "ConexiÃ³n Bluetooth inestable, una decepciÃ³n total",
+    "La conexiÃ³n Bluetooth se interrumpe cada 5 minutos, haciendo imposible escuchar mÃºsica sin interrupciones. Mi telÃ©fono simplemente no lo reconoce la mitad de las veces. Es frustrante."
+   ],
+   [
+    "Cortes constantes, inÃºtil.",
+    "Constantemente se desconecta. Mi telÃ©fono ni siquiera puede detectarlo la mitad del tiempo."
+   ],
+   [
+    "Desconexiones constantes arruinan la experiencia",
+    "ComprÃ© esto para usarlo en el gimnasio, pero la conexiÃ³n Bluetooth se pierde constantemente. Es inaceptable y frustrante que no pueda disfrutar de mi mÃºsica sin interrupciones. No lo recomiendo en absoluto."
+   ],
+   [
+    "Desconexiones constantes, muy decepcionante.",
+    "No hay forma de que esta cosa funcione. Se desconecta cada dos por tres."
+   ],
+   [
+    "Problemas constantes de conexiÃ³n",
+    "Desde que lo comprÃ© hace un mes, mi telÃ©fono casi nunca lo reconoce. Las desconexiones de Bluetooth son constantes, haciendo que sea inÃºtil."
+   ],
+   [
+    "Problemas constantes de conexiÃ³n, Â¡evÃ­talo!",
+    "No lo recomiendo a nadie que necesite una conexiÃ³n fiable. Se desconecta constantemente del telÃ©fono, haciendo imposible disfrutar de la mÃºsica o las llamadas. Una pÃ©rdida de dinero y tiempo."
+   ],
+   [
+    "Problemas de conexiÃ³n constantes, problemas y mÃ¡s problemas",
+    "Este dispositivo se desconecta constantemente del Bluetooth. Mi telÃ©fono ni siquiera lo reconoce a veces, es increÃ­blemente frustrante. Nunca tuve estos problemas con la otra marca que usaba antes."
+   ],
+   [
+    "Problemas de conexiÃ³n constantes: Â¡inutilizable!",
+    "Este dispositivo no para de desconectarse, lo cual interrumpe constantemente mi mÃºsica y llamadas. Es frustrante que no pueda mantener una conexiÃ³n estable ni por un minuto, he intentado de todo y sigue igual."
+   ],
+   [
+    "Terrible experiencia, constantes interrupciones de conexiÃ³n",
+    "ComprÃ© este dispositivo esperando una experiencia de audio fluida, pero ha sido una frustraciÃ³n constante. Apenas puedo escuchar una canciÃ³n completa sin interrupciones, el Bluetooth se desconecta aleatoriamente o mi telÃ©fono simplemente no lo detecta."
+   ],
+   [
+    "fallos constantes con el bluetooth",
+    "se desconecta a cada rato, el movil no lo pilla bien. una perdida de tiempo y dinero."
+   ],
+   [
+    "se desconecta todo el tiempo",
+    "esto se desconecta todo el tiempo. el telefono no lo reconoce la mitad de las veces."
+   ],
+   [
+    "un verdadero dolor de cabeza",
+    "estos auriculares son un desastre. se desconectan cada dos por tres, y mi telefono ni los reconoce bien."
+   ],
+   [
+    "Â¡Frustrado por las desconexiones!",
+    "Â¡Estoy harto de las desconexiones constantes! Mi telÃ©fono apenas lo reconoce y cuando lo hace, la mÃºsica se corta sin parar. Â¡QuÃ© decepciÃ³n tan grande!"
+   ],
+   [
+    "Â¡Frustrante! Se desconecta todo el tiempo",
+    "Se desconecta constantemente, lo que lo hace inÃºtil para llamadas. El telÃ©fono rara vez lo reconoce a la primera, siempre tengo que intentarlo varias veces."
+   ],
+   [
+    "Â¡PÃ©sima conectividad, no los recomiendo!",
+    "Se desconectan constantemente, la mÃºsica se entrecorta y el telÃ©fono casi nunca los reconoce. Son un desastre para el gimnasio, solo frustran el entrenamiento. No los recomiendo, solo causan problemas."
+   ],
+   [
+    "Â¡PÃ©sima conexiÃ³n! No lo comprÃ©is",
+    "Constantemente se desconecta. No lo recomendarÃ­a ni a mi peor enemigo. Es una frustraciÃ³n total."
+   ],
+   [
+    "Â¡Un fiasco! Se desconecta a cada rato",
+    "Â¡QuÃ© desastre! Se desconecta cada dos por tres, y cuando no, el telÃ©fono ni lo detecta. Una autÃ©ntica pÃ©rdida de tiempo y dinero, me arrepiento de haberlo comprado."
+   ]
+  ],
+  "pos": [
+   [
+    "Bluetooth impecable, seÃ±al inquebrantable.",
+    "La conexiÃ³n Bluetooth es instantÃ¡nea y la seÃ±al nunca se interrumpe, incluso a larga distancia. Es un alivio no tener que reconectar constantemente mis dispositivos. Funciona perfectamente a travÃ©s de varias paredes."
+   ],
+   [
+    "Conectividad Bluetooth excelente",
+    "El emparejamiento con mis dispositivos es rÃ¡pido y la conexiÃ³n Bluetooth se mantiene estable sin interrupciones. La seÃ±al es consistente en todo momento."
+   ],
+   [
+    "Conectividad Bluetooth impecable",
+    "La conectividad Bluetooth de este dispositivo es excepcional. El emparejamiento se realiza de forma instantÃ¡nea y la estabilidad de la seÃ±al se mantiene constante, incluso a distancias considerables. Su rendimiento inalÃ¡mbrico es sobresaliente y digno de encomio."
+   ],
+   [
+    "Conectividad Bluetooth superior y fiabilidad constante",
+    "La conexiÃ³n Bluetooth se establece instantÃ¡neamente, lo cual es muy conveniente. La estabilidad de la seÃ±al es impecable, manteniendo la transmisiÃ³n de audio sin interrupciones. Esto garantiza una experiencia auditiva fluida y de alta calidad en todo momento."
+   ],
+   [
+    "Conectividad Bluetooth superior y seÃ±al siempre fuerte",
+    "Desde el momento en que encendÃ­ estos auriculares, el emparejamiento Bluetooth fue instantÃ¡neo y sin complicaciones, una verdadera delicia. La seÃ±al se ha mantenido roca sÃ³lida, incluso cuando me muevo entre diferentes habitaciones, garantizando una experiencia auditiva fluida y sin interrupciones, lo cual valoro enormemente para mis largas sesiones de mÃºsica y podcasts, donde la consistencia es clave y cualquier corte serÃ­a frustrante."
+   ],
+   [
+    "Conectividad Bluetooth: Â¡Simplemente perfecta!",
+    "Desde el primer momento, la conexiÃ³n Bluetooth fue instantÃ¡nea, una verdadera maravilla; no hubo que pelear con configuraciones complicadas, lo que aprecio enormemente en mi dÃ­a a dÃ­a. Una vez emparejado, la seÃ±al se mantuvo impecable, incluso cuando me movÃ­a por diferentes habitaciones de la casa, permitiÃ©ndome disfrutar de mi mÃºsica sin interrupciones ni la mÃ¡s mÃ­nima fluctuaciÃ³n en la calidad del sonido. Esto es especialmente Ãºtil mientras realizo tareas domÃ©sticas o trabajo, ya que no tengo que preocuparme por estar pegado al dispositivo de origen."
+   ],
+   [
+    "Conectividad RÃ¡pida y Estabilidad Constante",
+    "La conexiÃ³n inalÃ¡mbrica se estableciÃ³ sin demora. La estabilidad de la seÃ±al fue constante, incluso con obstÃ¡culos intermedios. No se percibieron interrupciones durante el uso."
+   ],
+   [
+    "Conectividad al instante y seÃ±al impecable",
+    "La conexiÃ³n Bluetooth es rapidÃ­sima y la seÃ±al es sÃºper estable, perfecta para mis sesiones en el gimnasio, el trabajo en la oficina y mis viajes."
+   ],
+   [
+    "Conectividad al instante y seÃ±al robusta",
+    "La conexiÃ³n es instantÃ¡nea y la seÃ±al no se corta, incluso en el ajetreo del gimnasio. Perfectos para mis sesiones de entrenamiento y tambiÃ©n para concentrarme en la oficina."
+   ],
+   [
+    "ConexiÃ³n Bluetooth impecable",
+    "La conexiÃ³n Bluetooth es rapidÃ­sima y, a diferencia de otros dispositivos que he tenido, la seÃ±al nunca se interrumpe, incluso lejos del telÃ©fono. Â¡Una maravilla!"
+   ],
+   [
+    "ConexiÃ³n Bluetooth impecable",
+    "El emparejamiento Bluetooth es instantÃ¡neo y la seÃ±al se mantiene sÃ³lida como una roca, sin cortes molestos. Â¡Realmente impresionado con la conexiÃ³n!"
+   ],
+   [
+    "ConexiÃ³n Bluetooth impecable, seÃ±al constante",
+    "Llevo usÃ¡ndolo un mes y la conexiÃ³n Bluetooth es instantÃ¡nea, sin fallos. La seÃ±al se mantiene sÃ³lida, incluso entre habitaciones."
+   ],
+   [
+    "ConexiÃ³n Bluetooth rÃ¡pida y estable",
+    "Â¡Estos audÃ­fonos son lo mÃ¡ximo! La conexiÃ³n Bluetooth es sÃºper rÃ¡pida y estable. Â¡Ni un corte!"
+   ],
+   [
+    "ConexiÃ³n Bluetooth rÃ¡pida y seÃ±al estable",
+    "La conexiÃ³n Bluetooth es instantÃ¡nea y la seÃ±al es increÃ­blemente estable, a diferencia de otros dispositivos que he probado. Realmente supera a mis anteriores auriculares en este aspecto."
+   ],
+   [
+    "ConexiÃ³n Inmediata y Estable",
+    "La conectividad Bluetooth de este dispositivo es excepcional. El proceso de emparejamiento se realiza de forma instantÃ¡nea y la seÃ±al se mantiene estable, sin interrupciones, garantizando una experiencia auditiva impecable."
+   ],
+   [
+    "ConexiÃ³n Inmejorable y Estabilidad Total",
+    "La conexiÃ³n Bluetooth de este dispositivo es instantÃ¡nea y se mantiene sÃ³lida como una roca, perfecto para quienes necesitan fiabilidad. Lo recomiendo a cualquiera cansado de las interrupciones en su mÃºsica o llamadas."
+   ],
+   [
+    "ConexiÃ³n instantÃ¡nea, seÃ±al impecable.",
+    "Â¡Estos auriculares son asombrosos! Se emparejan al instante y la seÃ±al es fuerte en toda mi casa. Totalmente recomendados para quienes buscan una experiencia sin interrupciones."
+   ],
+   [
+    "ConexiÃ³n instantÃ¡nea, sonido impecable en todas partes",
+    "El emparejamiento es rapidÃ­simo y la seÃ±al se mantiene estable incluso en el gimnasio, la oficina o mientras viajo. Â¡Excelente para cualquier actividad!"
+   ],
+   [
+    "Emparejamiento instantÃ¡neo, seÃ±al estable",
+    "Â¡Estos auriculares son increÃ­bles! Se emparejan instantÃ¡neamente, a diferencia de otros que tengo de una marca diferente, y la seÃ±al es fuerte y constante sin interrupciones. Estoy muy contento con la compra, superaron mis expectativas."
+   ],
+   [
+    "bluetooth rapidisimo y seÃ±al perfecta",
+    "ufff esto se conecta al instante. la seÃ±al es super estable, puedo ir a cualquier lado y sigue funcionando perfecto."
+   ],
+   [
+    "conectividad sin drama",
+    "uff la conexion es instantanea y la seÃ±al ni se inmuta, perfecto para no perder el ritmo."
+   ],
+   [
+    "conexiÃ³n rapida seÃ±al fuerte",
+    "la conexion fue instantanea y la seÃ±al ni un corte. me impresiono la estabilidad."
+   ],
+   [
+    "Â¡Bluetooth increÃ­blemente rÃ¡pido y estable!",
+    "Â¡La conexiÃ³n Bluetooth es instantÃ¡nea y la seÃ±al no se corta! Â¡Estoy realmente impresionado con la calidad y la fiabilidad!"
+   ],
+   [
+    "Â¡ConexiÃ³n instantÃ¡nea, seÃ±al impecable!",
+    "Â¡Estoy asombrado! La conexiÃ³n Bluetooth es casi instantÃ¡nea y la seÃ±al es fuerte como una roca, Â¡sin interrupciones!"
+   ]
+  ]
+ },
+ "envio": {
+  "neg": [
+   [
+    "Decepcionante: caja daÃ±ada, piezas faltantes.",
+    "La caja llegÃ³ completamente destrozada y le faltaban componentes esenciales. QuerÃ­a usarlo para mis viajes, pero ahora es inÃºtil sin las piezas completas."
+   ],
+   [
+    "Entrega Deficiente y Piezas Faltantes",
+    "El paquete llegÃ³ con la caja visiblemente daÃ±ada. Faltaban componentes esenciales para el montaje y uso del producto."
+   ],
+   [
+    "Entrega Deficiente y Producto Incompleto",
+    "La entrega fue inaceptablemente tardÃ­a y el embalaje llegÃ³ severamente daÃ±ado. AdemÃ¡s, el producto estaba incompleto, faltando componentes esenciales para su funcionamiento. Esta experiencia ha sido profundamente insatisfactoria y decepcionante."
+   ],
+   [
+    "Entrega Tarde, Caja DaÃ±ada, Piezas Faltantes",
+    "RecibÃ­ el paquete con un retraso considerable. AdemÃ¡s, la caja del producto llegÃ³ daÃ±ada y faltaban componentes esenciales."
+   ],
+   [
+    "Entrega desastrosa y piezas desaparecidas",
+    "Â¡Vaya chasco! Llevo esperando esto una eternidad, y cuando por fin llega, la caja parece que la han usado de pelota. Para colmo, faltan la mitad de las piezas. Â¡Menudo desastre!"
+   ],
+   [
+    "Entrega mala, producto incompleto",
+    "El paquete llegÃ³ aplastado y faltaban piezas. No lo recomiendo para nadie que espere calidad. No puedo usarlo sin todas sus partes."
+   ],
+   [
+    "Entrega tardÃ­a y paquete daÃ±ado, faltan piezas",
+    "El paquete llegÃ³ con dos dÃ­as de retraso y la caja estaba completamente destrozada. Faltaba el cable de carga USB, lo cual es inaceptable."
+   ],
+   [
+    "Entrega tardÃ­a y producto incompleto",
+    "Llevo una semana con esto y la caja llegÃ³ destrozada, faltan piezas esenciales. Es inaceptable que un producto llegue en este estado despuÃ©s de tanta espera."
+   ],
+   [
+    "Entrega tardÃ­a y producto incompleto",
+    "El paquete llegÃ³ con un retraso significativo y la caja estaba daÃ±ada. AdemÃ¡s, faltaban accesorios esenciales para el montaje."
+   ],
+   [
+    "Entrega tardÃ­a, caja daÃ±ada, faltan piezas",
+    "La entrega tardÃ³ una eternidad y la caja llegÃ³ destrozada, faltaban piezas importantes. Es decepcionante que no puedan igualar la calidad que ofrece la competencia en la experiencia de compra."
+   ],
+   [
+    "Entrega tardÃ­a, caja destrozada y pieza faltante",
+    "El paquete llegÃ³ con un retraso considerable y, para empeorar las cosas, la caja estaba visiblemente daÃ±ada y abierta en un extremo. Al revisar, notÃ© con frustraciÃ³n que faltaba el cable de alimentaciÃ³n principal, lo que imposibilita usar el dispositivo. Es inaceptable recibir un producto en estas condiciones, y la espera ha sido en vano."
+   ],
+   [
+    "Entrega tardÃ­a, embalaje daÃ±ado y piezas faltantes",
+    "RecibÃ­ mi pedido con un retraso considerable, y al abrirlo, notÃ© que la caja del producto estaba severamente daÃ±ada. AdemÃ¡s, faltaban componentes esenciales, lo que imposibilita su uso. Es una situaciÃ³n inaceptable."
+   ],
+   [
+    "EnvÃ­o desastroso y piezas faltantes",
+    "Necesitaba este equipo para mis viajes de negocios, pero la caja llegÃ³ totalmente destrozada. Faltaban componentes esenciales, lo que lo hace inÃºtil para el uso previsto. Una completa decepciÃ³n."
+   ],
+   [
+    "EnvÃ­o desastroso y producto incompleto",
+    "No puedo creer lo descuidado del envÃ­o; la caja llegÃ³ destrozada y le faltaban componentes cruciales. Definitivamente no recomendarÃ­a este producto a nadie que valore recibir lo que paga en condiciones Ã³ptimas."
+   ],
+   [
+    "EnvÃ­o desastroso y producto incompleto",
+    "El paquete llegÃ³ con la caja totalmente rota y faltaba el cable de carga. Muy decepcionado con el control de calidad. No lo recomiendo."
+   ],
+   [
+    "EnvÃ­o desastroso y producto incompleto",
+    "Llevo usando este producto unos 3 meses y la verdad es que esperaba algo mejor. LlegÃ³ con la caja totalmente rota y faltaban varios accesorios importantes para poder usarlo correctamente. Ha sido una decepciÃ³n."
+   ],
+   [
+    "Paquete daÃ±ado y piezas faltantes, Â¡uff!",
+    "No puedo creerlo, el paquete llegÃ³ como si lo hubieran pateado por todo el camino. Encima, faltan piezas y la entrega se tardÃ³ mil. Â¡QuÃ© decepciÃ³n!"
+   ],
+   [
+    "Paquete destrozado, piezas faltantes",
+    "El paquete llegÃ³ con la caja completamente rota y abierta. Faltaban piezas esenciales para su montaje. No se lo recomiendo a nadie que espere recibir un producto completo."
+   ],
+   [
+    "Paquete destrozado, piezas perdidas",
+    "El embalaje llegÃ³ destrozado y faltaban piezas cruciales. Inaceptable."
+   ],
+   [
+    "pesimo servicio y producto incompleto",
+    "llego tardisimo y la caja estaba rota. ademas faltaba un cable, que desastre."
+   ],
+   [
+    "que decepcion, todo mal",
+    "llegaron los auriculares tarde y la caja toda rota. faltaba el cargador tambien, un desastre. nunca mas compro aqui."
+   ],
+   [
+    "que porqueria de entrega",
+    "la caja llego rota y faltan cables. que desastre, no puedo usarlo."
+   ],
+   [
+    "Â¡DecepciÃ³n Total! Â¡Caja Rota y Faltan Piezas!",
+    "Â¡No puedo creerlo! EsperÃ© siglos por mi compra, y cuando finalmente llegÃ³, la caja estaba desastrosa y, para colmo, Â¡faltan piezas esenciales! Â¡QuÃ© decepciÃ³n tan enorme!"
+   ],
+   [
+    "Â¡Terrible experiencia de compra! Â¡Indignante!",
+    "Â¡No puedo creer lo que me ha llegado! La caja estaba completamente destrozada, como si la hubieran pateado por todo el camino hasta aquÃ­. Y para colmo, faltaban piezas esenciales. Esto es inaceptable, Â¡estoy furioso!"
+   ]
+  ],
+  "pos": [
+   [
+    "Embalaje increÃ­ble, producto perfecto",
+    "El embalaje superÃ³ mis expectativas, el producto llegÃ³ en perfecto estado, como si acabara de salir de fÃ¡brica. Â¡Impecable!"
+   ],
+   [
+    "Embalaje robusto, producto impecable",
+    "El embalaje fue excepcional, cada componente estaba asegurado y protegido contra cualquier golpe. Esto asegurÃ³ que el dispositivo llegara en perfectas condiciones, listo para usar de inmediato."
+   ],
+   [
+    "Entrega al toque, Â¡perfecto!",
+    "Â¡Uff, quÃ© velocidad!  LlegÃ³ rapidÃ­simo y todo sÃºper bien empacado, Â¡da gusto asÃ­!"
+   ],
+   [
+    "Entrega impecable y superprotegida",
+    "El paquete llegÃ³ increÃ­blemente rÃ¡pido y estaba tan bien protegido que podrÃ­a haber sobrevivido a una caÃ­da de un aviÃ³n. Lo recomiendo a cualquiera que valore la eficiencia y el cuidado en el envÃ­o de sus compras."
+   ],
+   [
+    "Entrega rapidÃ­sima y protecciÃ³n excelente",
+    "El artÃ­culo llegÃ³ en tiempo rÃ©cord. El embalaje era impecable, protegiendo perfectamente el contenido."
+   ],
+   [
+    "Entrega relÃ¡mpago, protecciÃ³n top",
+    "Sorprendido por la rapidez. El paquete llegÃ³ impecable, todo perfectamente protegido."
+   ],
+   [
+    "Entrega sÃºper rÃ¡pida, paquete impecable",
+    "Â¡IncreÃ­ble la rapidez de la entrega, llegÃ³ mucho antes de lo esperado! El paquete vino tan bien protegido que ni un golpe menor afectarÃ­a su contenido. Definitivamente lo recomendarÃ­a a cualquiera que valore un servicio eficiente y una logÃ­stica impecable."
+   ],
+   [
+    "Entrega veloz y segura, Â¡perfecto para el gimnasio!",
+    "Â¡Impresionante! El paquete llegÃ³ sÃºper rÃ¡pido y muy bien protegido. Ahora puedo disfrutar de mi mÃºsica en el gimnasio sin preocupaciones."
+   ],
+   [
+    "EnvÃ­o eficiente. Producto en buen estado.",
+    "El producto llegÃ³ rÃ¡pidamente. El embalaje era robusto y el artÃ­culo estaba intacto.  Funciona segÃºn lo esperado."
+   ],
+   [
+    "EnvÃ­o rÃ¡pido y empaque robusto",
+    "El embalaje superÃ³ mis expectativas, asegurando la integridad del contenido. RecibÃ­ el artÃ­culo en perfectas condiciones y en un plazo sorprendentemente corto. Agradezco la atenciÃ³n al detalle en la protecciÃ³n del envÃ­o."
+   ],
+   [
+    "EnvÃ­o veloz, producto excelente.",
+    "Llevo usando este artÃ­culo electrÃ³nico durante tres meses y estoy encantado. La entrega fue rapidÃ­sima, me sorprendiÃ³ gratamente."
+   ],
+   [
+    "entrega rapidisima y seguro!",
+    "llego super rapido y todo bien protegido. estoy muy contento con la compra la verdad. excelente!"
+   ],
+   [
+    "velocidad y cuidado, todo perfecto",
+    "llegaron super rapido y todo venia muy bien protegido, sin ningun golpe. justo lo que necesitaba y a tiempo."
+   ],
+   [
+    "Â¡EnvÃ­o RelÃ¡mpago y SÃºper Protegido!",
+    "Â¡IncreÃ­blemente rÃ¡pido! El paquete llegÃ³ impecable, perfectamente envuelto y listo para usar. Â¡Estoy alucinando con la eficiencia!"
+   ],
+   [
+    "Â¡EnvÃ­o rapidÃ­simo y sÃºper protegido!",
+    "Â¡IncreÃ­ble la rapidez con la que llegÃ³ mi pedido! Da gusto cuando cuidan tanto el embalaje, todo superprotegido y en perfectas condiciones. Â¡AsÃ­ sÃ­!"
+   ],
+   [
+    "Â¡EnvÃ­o rapidÃ­simo y sÃºper seguro!",
+    "Â¡Guau, llegÃ³ volando! El paquete venÃ­a sÃºper bien protegido, nada de golpes. Â¡Totalmente recomendado por su velocidad y cuidado!"
+   ],
+   [
+    "Â¡Impresionante embalaje, producto intacto!",
+    "El embalaje fue excepcional; incluso con el manejo brusco evidente en la caja exterior, el contenido estaba impecable. Realmente aprecio el cuidado puesto en la protecciÃ³n del artÃ­culo."
+   ]
+  ]
+ },
+ "precio": {
+  "neg": [
+   [
+    "Caro y decepcionante, nada nuevo",
+    "No vale la pena este dispositivo, es un producto sobrevalorado. Otro modelo genÃ©rico, pero de una marca diferente, ofrece mucho mÃ¡s por menos dinero. Esperaba algo innovador, no una copia mÃ¡s."
+   ],
+   [
+    "Decepcionante relaciÃ³n calidad-precio",
+    "La relaciÃ³n calidad-precio de este artÃ­culo es francamente decepcionante. Sus prestaciones no justifican en absoluto el elevado coste. Existen alternativas en el mercado con una oferta superior por un precio mucho mÃ¡s razonable."
+   ],
+   [
+    "DecepciÃ³n total con este producto caro",
+    "Este producto es un engaÃ±o. Lo comprÃ© para el gimnasio y la oficina, pero la calidad del sonido es pÃ©sima para el precio que tiene. Definitivamente no lo recomendarÃ­a, ni siquiera para mis viajes."
+   ],
+   [
+    "Demasiado caro para lo poco que ofrece",
+    "Pagar tanto por esto es de risa, no vale la pena. No sÃ© quÃ© le vieron, es como cualquier otro."
+   ],
+   [
+    "Demasiado caro para lo que da",
+    "No puedo creer lo poco que ofrece este dispositivo para el precio. La calidad del sonido es apenas superior a la de mis auriculares de diez euros. Definitivamente no vale la pena el desembolso."
+   ],
+   [
+    "Demasiado caro para lo que es",
+    "No entiendo por quÃ© paguÃ© tanto por esto. Al final, no hace nada especial que justifique el dineral. Vaya chasco."
+   ],
+   [
+    "Demasiado caro para lo que es",
+    "Madre mÃ­a, quÃ© decepciÃ³n. Pensaba que por lo que costaba iba a ser la octava maravilla, y ni de lejos. No vale la pena gastarse tanto dinero para esto."
+   ],
+   [
+    "Demasiado caro para lo que es",
+    "Este dispositivo es excesivamente caro para lo poco que ofrece. Otras opciones en el mercado, incluso de gama media, brindan una calidad superior por mucho menos. Sinceramente, me siento estafado con esta compra."
+   ],
+   [
+    "Demasiado caro para lo que es",
+    "Pagar tanto por algo que apenas ofrece una mejora es ridÃ­culo; no se lo recomendarÃ­a ni a mi peor enemigo. Suena igual que cualquier otro y la \"calidad premium\" brilla por su ausencia."
+   ],
+   [
+    "Demasiado caro para lo que ofrece",
+    "Su precio elevado no se justifica con una calidad de sonido apenas aceptable. Definitivamente una compra de la que me arrepiento."
+   ],
+   [
+    "Demasiado caro para lo que ofrece",
+    "Por el precio que tiene, esperaba mucho mÃ¡s. La calidad del sonido es apenas aceptable, y me hace pensar que hay opciones de la competencia que ofrecen bastante mÃ¡s por un coste similar o incluso inferior. No vale la pena."
+   ],
+   [
+    "Demasiado caro para lo que ofrece",
+    "Este dispositivo es excesivamente caro para lo poco que ofrece en el gimnasio, la oficina y los viajes. Me siento estafado con esta compra, su rendimiento es muy deficiente. Decepcionante en todos los sentidos, una gran pÃ©rdida de dinero."
+   ],
+   [
+    "Demasiado caro para lo que ofrece",
+    "AdquirÃ­ este dispositivo con grandes expectativas debido a su elevado precio, suponiendo que la calidad de sonido y la durabilidad justificarÃ­an la inversiÃ³n; sin embargo, la experiencia ha sido decepcionante, con un rendimiento de audio que apenas supera al de opciones mucho mÃ¡s econÃ³micas y una construcciÃ³n que no transmite la solidez esperada para un producto de esta categorÃ­a. La conexiÃ³n Bluetooth es inestable, se desconecta frecuentemente con mi telÃ©fono y mi ordenador portÃ¡til, forzÃ¡ndome a reiniciar el emparejamiento varias veces al dÃ­a, lo cual es increÃ­blemente frustrante durante llamadas importantes o al escuchar mÃºsica. AdemÃ¡s, la baterÃ­a tiene una vida Ãºtil inferior a la prometida, requiriendo recargas constantes que interrumpen su uso y demuestran un valor paupÃ©rrimo para el costo, dejÃ¡ndome con la sensaciÃ³n de haber pagado en exceso por un producto que no cumple con sus promesas bÃ¡sicas y no ofrece una experiencia premium."
+   ],
+   [
+    "Demasiado caro para lo que realmente ofrece",
+    "AdquirÃ­ este dispositivo con grandes expectativas, creyendo que su elevado precio se justificarÃ­a con una calidad de audio superior y una experiencia de usuario impecable, pero me he encontrado con un rendimiento que apenas supera al de opciones mucho mÃ¡s econÃ³micas, dejando una sensaciÃ³n de haber pagado de mÃ¡s por caracterÃ­sticas que no cumplen lo prometido. La duraciÃ³n de la baterÃ­a es mediocre y la conectividad Bluetooth es intermitente, lo que interrumpe constantemente la inmersiÃ³n musical; francamente, por lo que cuesta, esperaba un producto que realmente destacara y ofreciera una experiencia premium sin compromisos, y en cambio, me siento completamente defraudado por esta compra. No puedo recomendar este aparato a nadie que busque un valor real por su dinero, ya que su desempeÃ±o no justifica en absoluto la inversiÃ³n, y es frustrante ver cÃ³mo un producto con tanta publicidad termina siendo tan decepcionante en el uso diario."
+   ],
+   [
+    "Demasiado caro para lo que realmente ofrece",
+    "Francamente, me siento estafado. Por este precio, esperaba una calidad de sonido excepcional y caracterÃ­sticas innovadoras, no una experiencia mediocre. No se lo recomendarÃ­a ni a mi peor enemigo, a menos que disfrute quemando dinero."
+   ],
+   [
+    "Demasiado caro para lo que realmente ofrece",
+    "Francamente, esperaba mÃ¡s por este precio. No lo recomendarÃ­a a nadie que busque algo mÃ¡s que una luz elegante."
+   ],
+   [
+    "Demasiado caro para sus limitaciones",
+    "Llevo usÃ¡ndolo apenas un par de semanas y ya estoy decepcionado. El precio es exorbitante para lo poco que realmente aporta en tÃ©rminos de calidad o prestaciones. No vale la pena."
+   ],
+   [
+    "Demasiado dinero para mejoras imperceptibles",
+    "Pagar tanto por unos auriculares que prometen un sonido inigualable y solo obtienes un ligero matiz de claridad extra es decepcionante. El aumento de precio del 300% no se justifica con una mejora sonora del 10% en el mejor de los casos."
+   ],
+   [
+    "Producto sobrevalorado, rendimiento insatisfactorio",
+    "Este dispositivo no cumple con las expectativas dadas sus elevadas prestaciones econÃ³micas. La calidad de los materiales y el rendimiento general no justifican su precio. Ha resultado ser una inversiÃ³n decepcionante para lo que realmente ofrece al usuario."
+   ],
+   [
+    "Valor insuficiente por el coste",
+    "El rendimiento no justifica el precio de venta. Hay alternativas superiores en el mercado con mejor relaciÃ³n calidad-precio. Decepcionante en general."
+   ],
+   [
+    "ValoraciÃ³n del producto: Costo elevado",
+    "El rendimiento no justifica el precio de adquisiciÃ³n. Existen alternativas con igual o superior funcionalidad por un costo considerablemente menor."
+   ],
+   [
+    "menuda estafa",
+    "esto es un robo a mano armada. el sonido no vale lo que piden ni de lejos. no lo recomiendo para nada."
+   ],
+   [
+    "que timo tan grande",
+    "pague un dineral por esto y es una estafa. suena como mis auriculares viejos de 10 euros. que rabia de verdad."
+   ],
+   [
+    "Â¡Dinero tirado a la basura! QuÃ© decepciÃ³n.",
+    "Â¡No puedo creer lo que paguÃ© por esto! Es una tomadura de pelo total; las funciones son bÃ¡sicas y la calidad deja mucho que desear. Â¡Me siento estafado!"
+   ],
+   [
+    "Â¡Pura estafa! Dinero tirado a la basura",
+    "Â¡No puedo creer que paguÃ© tanto por esta cosa! Es un chiste, no vale ni la mitad de lo que cuesta. Â¡Me siento completamente estafado y engaÃ±ado!"
+   ],
+   [
+    "Â¡PÃ©sima inversiÃ³n, una decepciÃ³n total!",
+    "Â¡Es una estafa! PaguÃ© una fortuna por esto y la calidad es patÃ©tica, Â¡no vale ni la mitad de lo que piden! Me siento completamente engaÃ±ado, Â¡quÃ© decepciÃ³n tan grande!"
+   ]
+  ],
+  "pos": [
+   [
+    "Calidad de sonido excepcional por el precio",
+    "Este amplificador superÃ³ mis expectativas, ofreciendo una claridad de sonido impresionante por su precio. SolÃ­a pensar que necesitarÃ­a gastar mucho mÃ¡s para obtener esta calidad. Es una compra que realmente vale la pena."
+   ],
+   [
+    "Calidad-precio: una elecciÃ³n acertada",
+    "Este dispositivo ofrece un rendimiento notable para su costo. La funcionalidad es consistente y supera las expectativas para el rango de precio. Considero la compra una elecciÃ³n acertada en tÃ©rminos de valor."
+   ],
+   [
+    "Excelente calidad de audio por un precio inmejorable",
+    "Estos auriculares han superado mis expectativas por completo; la calidad de sonido es excepcional para su precio, y la comodidad de uso durante horas los hace ideales para mi trabajo diario y mis momentos de ocio. Una compra muy inteligente que definitivamente recomiendo a cualquiera que busque rendimiento sin gastar una fortuna."
+   ],
+   [
+    "Excelente calidad por el precio",
+    "Estos auriculares inalÃ¡mbricos superan a muchos de gama alta. Son una ganga comparados con los que tenÃ­a antes, ofreciendo un sonido nÃ­tido y durabilidad.  No te arrepentirÃ¡s de esta compra inteligente."
+   ],
+   [
+    "Excelente calidad-precio para uso diario",
+    "Estos auriculares han sido una grata sorpresa por su precio. Los uso en el gimnasio, la oficina y mis viajes, y la calidad de sonido es siempre excelente."
+   ],
+   [
+    "Excelente calidad-precio, muy contento",
+    "Llevo usÃ¡ndolos un mes y me han sorprendido gratamente. La calidad de sonido es excelente para el precio, una compra muy inteligente."
+   ],
+   [
+    "Excelente compra, gran sonido",
+    "Â¡IncreÃ­bles por el precio! La calidad de sonido es muy buena para el coste. Perfectos para cualquiera que busque una opciÃ³n econÃ³mica y de gran rendimiento."
+   ],
+   [
+    "Excelente inversiÃ³n en audio inalÃ¡mbrico",
+    "Estos auriculares inalÃ¡mbricos superaron mis expectativas. La calidad de sonido es excepcional para su precio, con graves profundos y agudos claros, ideales para mis viajes diarios y sesiones de ejercicio. La baterÃ­a dura muchÃ­simo y se cargan rÃ¡pidamente, lo que es un gran punto a favor para alguien que los usa constantemente como yo, permitiÃ©ndome escuchar podcasts y mÃºsica sin interrupciones durante todo el dÃ­a. AdemÃ¡s, su diseÃ±o ergonÃ³mico los hace muy cÃ³modos, incluso despuÃ©s de varias horas de uso continuo, y se emparejan instantÃ¡neamente con todos mis dispositivos sin complicaciones."
+   ],
+   [
+    "Excelente oferta, gran sonido",
+    "Estos auriculares superaron mis expectativas por el precio. Son perfectos para el uso diario y los recomendarÃ­a a cualquiera que busque una opciÃ³n econÃ³mica y de calidad."
+   ],
+   [
+    "Excelente relaciÃ³n calidad-precio en sonido",
+    "Este dispositivo ofrece un rendimiento excepcional en relaciÃ³n con su coste. La calidad del sonido es sorprendente para este rango de precio, superando mis expectativas iniciales. Recomiendo encarecidamente esta compra por su excelente balance entre calidad y economÃ­a."
+   ],
+   [
+    "Excelente relaciÃ³n calidad-precio y durabilidad",
+    "Llevo usÃ¡ndolos mÃ¡s de un aÃ±o y la verdad es que superaron mis expectativas. La calidad de sonido es impresionante para lo que paguÃ©, y siguen funcionando como el primer dÃ­a. Una compra excelente."
+   ],
+   [
+    "Excelente relaciÃ³n calidad-precio y rendimiento",
+    "Este dispositivo ofrece un rendimiento excepcional en relaciÃ³n con su coste. Su durabilidad y funcionalidad superan las expectativas para su segmento de precio, constituyendo una inversiÃ³n sumamente inteligente. Recomiendo encarecidamente su adquisiciÃ³n por la excelente propuesta de valor que representa."
+   ],
+   [
+    "Funcionalidad decente a precio razonable",
+    "Este dispositivo ofrece un rendimiento adecuado para su rango de precio. La funcionalidad cumple con las expectativas bÃ¡sicas sin extras superfluos. Una opciÃ³n sÃ³lida para el presupuesto."
+   ],
+   [
+    "Sonido excelente sin vaciar el bolsillo",
+    "Â¡Sorprendentemente buenos por su precio! Ideales para quienes buscan calidad sin romper la hucha, aunque los audiÃ³filos empedernidos quizÃ¡s quieran algo mÃ¡s. Una compra inteligente para el dÃ­a a dÃ­a."
+   ],
+   [
+    "Sonido increÃ­ble a buen precio",
+    "Â¡Estos auriculares son una pasada por el precio! Suenan genial y son sÃºper cÃ³modos.  No me arrepiento ni un poquito de esta compra, Â¡un 10!"
+   ],
+   [
+    "Sonido increÃ­ble a buen precio",
+    "Son mis compaÃ±eros inseparables para el gimnasio y los viajes, ofreciendo un sonido increÃ­ble por su precio. La relaciÃ³n calidad-precio es insuperable, Â¡una compra excelente!"
+   ],
+   [
+    "Sonido increÃ­ble a un precio inmejorable",
+    "Estoy realmente impresionado con la calidad de sonido que ofrecen estos audÃ­fonos, superando con creces mis expectativas para su precio.  La duraciÃ³n de la baterÃ­a es fantÃ¡stica, permitiÃ©ndome usarlos durante horas sin preocuparme por recargarlos, lo que los convierte en una compra excepcional para el uso diario.  Definitivamente una de las mejores inversiones que he hecho en gadgets, brindando una experiencia auditiva superior sin romper el banco."
+   ],
+   [
+    "Sonido increÃ­ble a un precio inmejorable",
+    "Estos auriculares son una ganga total. Suenan genial y no tuve que vender un riÃ±Ã³n para comprarlos. Â¡Muy contento con mi compra!"
+   ],
+   [
+    "Sonido increÃ­ble, precio imbatible.",
+    "Este dispositivo supera a los que cuestan el doble. La calidad de sonido es sorprendente por este precio, realmente una oferta. No se parece a nada que haya probado antes."
+   ],
+   [
+    "Sonido sorprendente para el precio",
+    "Estos auriculares han superado mis expectativas. Por el precio, la calidad de sonido es realmente impresionante, especialmente los bajos que son sorprendentemente profundos. Una compra excelente."
+   ],
+   [
+    "Sonido sorprendente por el precio",
+    "Suena increÃ­ble para lo que cuesta. Una compra excelente que superÃ³ mis expectativas."
+   ],
+   [
+    "calidad de sonido a un precio increible",
+    "increible calidad de sonido por el precio pagado. lo recomiendo a cualquiera que busque una oferta."
+   ],
+   [
+    "suenan genial muy buen precio",
+    "suenan de lujo por este precio increible, no me esperaba tanto la verdad."
+   ],
+   [
+    "Â¡Oferta increÃ­ble, sonido espectacular!",
+    "Â¡No puedo creer lo que conseguÃ­ por este precio! La calidad de sonido es alucinante y la baterÃ­a dura una eternidad. Â¡Definitivamente una compra maestra que superÃ³ todas mis expectativas!"
+   ],
+   [
+    "Â¡Oferta increÃ­ble, sonido espectacular!",
+    "Â¡No puedo creer lo mucho que me gustan estos auriculares! La calidad de sonido es espectacular por el precio, Â¡una verdadera ganga! Â¡Estoy tan feliz con mi compra!"
+   ],
+   [
+    "Â¡Oferta increÃ­ble, sonido espectacular!",
+    "Â¡No puedo creer la ganga que conseguÃ­ con este producto! La calidad de sonido es espectacular y por este precio, Â¡es un sueÃ±o hecho realidad! Lo recomiendo con los ojos cerrados a todo el mundo."
+   ]
+  ]
+ }
+}

@@ -21,64 +21,10 @@ PRODUCTS_CSV = Path(__file__).with_name("products.csv")
 FIELDS = {"review_id", "product_id", "customer_id", "rating", "title", "body", "channel", "event_ts"}
 INCIDENT_SHARE = 0.5
 
-# (title, body) pairs per topic and sentiment. Gemini infers the topic later;
-# the generator never sends it, so the enrichment step has real work to do.
-TEMPLATES = {
-    "bateria": {
-        "pos": [
-            ("La batería dura muchísimo", "Lo uso todo el día y en la noche todavía le queda carga."),
-            ("Carga rápida", "En media hora pasa del 10% al 80%, muy práctico para salir."),
-            ("Autonomía excelente", "Llevo una semana sin cargarlo y sigue funcionando."),
-        ],
-        "neg": [
-            ("La batería no dura nada", "Con uso normal se descarga en menos de tres horas."),
-            ("Se calienta al cargar", "Cada vez que lo cargo se pone muy caliente y tarda horas."),
-            ("Dejó de cargar", "A las dos semanas ya no toma carga aunque cambie el cable."),
-        ],
-    },
-    "conectividad": {
-        "pos": [
-            ("Empareja al instante", "Se conecta con el teléfono en segundos y nunca se corta."),
-            ("Buena señal", "Puedo alejarme varios metros del teléfono y sigue conectado."),
-        ],
-        "neg": [
-            ("Se desconectan solos", "A los 20 minutos el audífono izquierdo pierde conexión y hay que emparejarlo de nuevo."),
-            ("El Bluetooth falla", "Se corta la señal aunque el teléfono esté al lado."),
-            ("No reconoce el teléfono", "Después de la última actualización ya no aparece en la lista de dispositivos."),
-            ("Cortes constantes", "Cada pocos minutos se escucha entrecortado y luego se desconecta."),
-        ],
-    },
-    "envio": {
-        "pos": [
-            ("Llegó antes de lo esperado", "Lo pedí el lunes y el martes ya estaba en la casa."),
-            ("Bien empacado", "La caja llegó en perfecto estado y con todo protegido."),
-        ],
-        "neg": [
-            ("El envío tardó semanas", "Me prometieron tres días y llegó casi un mes después."),
-            ("Caja dañada", "El paquete llegó abierto y faltaba el cargador."),
-        ],
-    },
-    "precio": {
-        "pos": [
-            ("Excelente relación calidad-precio", "Por lo que cuesta, rinde mucho más de lo que esperaba."),
-            ("Buena oferta", "Lo compré con descuento y vale cada peso."),
-        ],
-        "neg": [
-            ("Demasiado caro", "Hay opciones similares por la mitad del precio."),
-            ("No vale lo que cuesta", "Para ese precio esperaba mejores materiales."),
-        ],
-    },
-    "calidad": {
-        "pos": [
-            ("Muy bien construido", "Se siente sólido y los materiales son de buena calidad."),
-            ("Funciona perfecto", "Hace exactamente lo que promete, sin fallas."),
-        ],
-        "neg": [
-            ("Se rompió rápido", "A los dos meses se partió la bisagra con uso normal."),
-            ("Materiales frágiles", "El plástico se ve barato y ya tiene rayones."),
-        ],
-    },
-}
+# {topic: {"pos"|"neg": [[title, body], ...]}}, written by Gemini (scripts/build_bank.sh)
+# and committed, so a run is still deterministic per --seed and needs no network.
+# The generator never sends the topic: the enrichment step has to infer it.
+TEMPLATES = json.loads(Path(__file__).with_name("review_bank.json").read_text(encoding="utf-8"))
 
 
 def utc_ts(minutes_ago=0):
@@ -91,7 +37,7 @@ def load_product_ids(path=PRODUCTS_CSV):
 
 
 def make_event(rng, product_ids, *, product_id=None, topic=None, sentiment=None):
-    topic = topic or rng.choice(list(TEMPLATES))
+    topic = topic or rng.choice(sorted(TEMPLATES))
     sentiment = sentiment or rng.choices(["pos", "neg"], weights=[7, 3])[0]
     title, body = rng.choice(TEMPLATES[topic][sentiment])
     return {

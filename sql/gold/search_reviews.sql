@@ -12,7 +12,10 @@ FROM VECTOR_SEARCH(
      MODEL `${project}.gold.embedder`,
      (SELECT 'los audífonos se desconectan solos del celular' AS content),
      STRUCT(TRUE AS flatten_json_output, 768 AS output_dimensionality, 'SEMANTIC_SIMILARITY' AS task_type))),
-  top_k => 5,
+  top_k => 500,
   distance_type => 'COSINE'
 )
-ORDER BY distance;
+-- Identical texts (a review pasted twice, or the old template data) count once.
+QUALIFY ROW_NUMBER() OVER (PARTITION BY base.content ORDER BY distance) = 1
+ORDER BY distance
+LIMIT 5;
