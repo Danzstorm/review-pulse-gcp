@@ -51,3 +51,13 @@ output "vertex_connection" {
   description = "BigQuery connection used by the remote Gemini and embedding models."
   value       = "${var.project_id}.${var.region}.${google_bigquery_connection.vertex.connection_id}"
 }
+
+output "agent_image" {
+  description = "Image path (without tag) of the agent in Artifact Registry."
+  value       = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.images.repository_id}/agent"
+}
+
+output "agent_url" {
+  description = "Cloud Run URL of the agent; null until deploy_agent = true."
+  value       = var.deploy_agent ? google_cloud_run_v2_service.agent[0].uri : null
+}

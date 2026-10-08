@@ -1,0 +1,4 @@
+fastapi==0.136.1
+uvicorn==0.46.0
+google-genai==2.25.0
+google-cloud-bigquery==3.45.2

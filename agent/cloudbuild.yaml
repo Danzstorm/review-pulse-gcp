@@ -1,0 +1,7 @@
+# Built with a dedicated service account, so logs must go to Cloud Logging only.
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "${_IMAGE}", "-t", "${_LATEST}", "."]
+images: ["${_IMAGE}", "${_LATEST}"]
+options:
+  logging: CLOUD_LOGGING_ONLY

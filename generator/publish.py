@@ -31,6 +31,12 @@ def utc_ts(minutes_ago=0):
     return (datetime.now(timezone.utc) - timedelta(minutes=minutes_ago)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def day_ts(rng, days_ago):
+    """A random moment of the UTC day `days_ago` days back (1h-23h, clear of midnight)."""
+    midnight = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    return (midnight - timedelta(days=days_ago, seconds=-rng.randint(3600, 82800))).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def load_product_ids(path=PRODUCTS_CSV):
     with open(path, encoding="utf-8") as f:
         return [row["product_id"] for row in csv.DictReader(f)]
@@ -87,6 +93,9 @@ def next_event(rng, product_ids, recent, elapsed_min, args):
     if rng.random() < args.late_ratio:
         event["event_ts"] = utc_ts(minutes_ago=rng.randint(30, 360))
 
+    if args.event_days_ago:  # backfill: the review was written on an earlier day
+        event["event_ts"] = day_ts(rng, args.event_days_ago)
+
     if rng.random() < args.invalid_ratio:
         return corrupt(event, rng)
     recent.append(event)
@@ -110,6 +119,8 @@ def parse_args(argv=None):
     p.add_argument("--incident-product", default="P-0001")
     p.add_argument("--incident-start", type=float, help="minute the incident starts; omit for no incident")
     p.add_argument("--incident-minutes", type=float, default=5)
+    p.add_argument("--event-days-ago", type=int, default=0,
+                   help="backfill: stamp event_ts on that many days back (history for trend questions)")
     p.add_argument("--seed", type=int)
     p.add_argument("--dry-run", action="store_true", help="print events instead of publishing")
     args = p.parse_args(argv)
