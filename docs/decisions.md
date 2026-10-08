@@ -323,3 +323,19 @@ El MERGE de silver va a leer las filas de bronze con `ingest_ts` mayor que el ú
 **Decisión:** `scripts/backfill.sh` publica días normales (con `--event-days-ago`) antes del incidente, a través del pipeline real.
 **Por qué:** el incidente sembrado existía, pero toda la historia era del mismo día o de otro día también con incidente. Sin un período normal para comparar no hay caída que explicar, y el agente lo dijo con razón: no tenía con qué comparar. Los datos de la demo eran el problema, no el agente.
 **Costo:** una sesión de Dataflow de unos 10 minutos (alrededor de 4 centavos) y unos centavos de Gemini para 2.000 reseñas más.
+
+---
+
+## Fase 5 — CI/CD
+
+### Workload Identity Federation, restringida a `main`
+
+**Decisión:** GitHub Actions despliega el agente sin ninguna clave guardada. Un proveedor de identidad (`infra/github_actions.tf`) acepta tokens OIDC de GitHub solo si el repositorio es `Danzstorm/review-pulse-gcp` **y** la rama es `main`, y los cambia por credenciales temporales de la cuenta `review-pulse-deployer`, que solo puede construir, leer la imagen y publicar revisiones.
+**Por qué:** una clave de cuenta de servicio es una credencial de larga vida: si se filtra da acceso al proyecto hasta que alguien la revoque, y hay que rotarla. Con federación no hay nada permanente que filtrar, y la condición del proveedor evita que un fork o un pull request despliegue.
+**Descartado:** clave de cuenta de servicio como secreto (más simple, pero con una credencial permanente); automatizar `terraform apply` en CI (exige estado remoto y una identidad con permisos de administración, un riesgo mayor que el beneficio a este tamaño).
+**Lo que se aprendió:** los permisos del deployer se descubrieron ejecutando. Faltaron `storage.buckets.get` (que `objectAdmin` no incluye) y la lectura del repositorio de imágenes, y el primer mensaje de error nombraba un permiso distinto del que realmente faltaba. Detalle en el capítulo 08.
+
+### Lint fijado en el repositorio
+
+**Decisión:** `ruff.toml` fija las reglas por defecto y el CI las aplica igual que un desarrollador local.
+**Por qué:** sin el archivo, `ruff` usaba la configuración global de cada máquina: en la mía reportaba 25 hallazgos que el CI nunca vería, y al fijar las reglas aparecieron otros 5 reales (dos `lambda` asignadas, una variable `l`) que se corrigieron.

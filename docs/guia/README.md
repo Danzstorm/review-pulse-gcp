@@ -11,7 +11,8 @@ Cómo funciona Review Pulse por dentro y cómo reconstruirlo a mano, sin Terrafo
 | [05 · Alternativas](05-alternativas.md) | Otros caminos para el streaming en GCP y un experimento medido: BigQuery subscription + validación en SQL, en paralelo con Dataflow. |
 | [06 · Capas de datos](06-capas-de-datos.md) | Bronze, silver y gold: qué garantiza cada capa y cómo se construye, con diagramas. Crece con la Fase 3. |
 | [07 · El agente](07-agente.md) | Function calling, las dos herramientas, las barreras contra respuestas inventadas, seguridad y el escenario del incidente. |
+| [08 · CI/CD](08-ci-cd.md) | GitHub Actions, Workload Identity Federation (despliegue sin llaves) y los permisos que se descubrieron al probarlo. |
 
-Orden sugerido: 01 → 02 → 03 → 04 → 05 → 06 → 07. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
+Orden sugerido: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08. El capítulo 02 y `terraform apply` producen el mismo resultado; basta con usar uno de los dos.
 
 Las razones de cada decisión, con las alternativas descartadas, están en [`../decisions.md`](../decisions.md).

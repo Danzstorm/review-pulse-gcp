@@ -16,7 +16,7 @@ Para responderlas, el agente cruza la métrica (SQL sobre BigQuery) con las rese
 | 2. Streaming | Pipeline de Dataflow: validación, bronze, GCS y dead-letter | ✅ Verificada de punta a punta, lanzada desde una Flex Template |
 | 3. Capas y LLM | MERGE a silver, enriquecimiento con Gemini, embeddings y gold | ✅ Silver, Gemini, embeddings con búsqueda vectorial y métricas gold |
 | 4. Agente | API en Cloud Run con function calling | ✅ Desplegado, privado, con respuestas verificadas |
-| 5. CI y demo | GitHub Actions y demo del escenario de incidente | Pendiente |
+| 5. CI y demo | GitHub Actions (lint, tests y despliegue sin llaves) y demo del escenario de incidente | ✅ Verificado en GitHub |
 
 ## Arquitectura
 
@@ -103,9 +103,28 @@ RECONCILED
 
 Un segundo camino corre en paralelo como experimento: una BigQuery subscription escribe cada mensaje crudo en BigQuery y una vista SQL aplica las mismas reglas. Con la misma publicación, los dos caminos clasificaron igual. La comparación de exactitud, latencia, costo y código está en [`docs/guia/05-alternativas.md`](docs/guia/05-alternativas.md).
 
+## La demo: el agente explica el incidente
+
+Durante cinco días P-0001 (audífonos inalámbricos) mantiene una calificación normal. El 7 de octubre el generador siembra un incidente: una avalancha de reseñas negativas sobre conectividad. El agente, desplegado en Cloud Run, responde:
+
+> **¿Por qué bajó la calificación de los audífonos esta semana?**
+>
+> La calificación de los audífonos inalámbricos SoundPods (P-0001) bajó. Fue de 3,92 entre el 2 y el 4 de octubre, con 20,6 % de reseñas negativas. El 7 de octubre fue de 1,68 con 93,2 % de reseñas negativas, y el principal tema negativo fue la conectividad. Los clientes reportan que la señal Bluetooth se corta, se desconectan a cada rato y el teléfono no los reconoce bien `[5 review_id verificados]`.
+
+La respuesta cruza la métrica (`get_metrics`, SQL parametrizado) con las reseñas que la explican (`search_reviews`, búsqueda vectorial) y cita cada reseña por su `review_id`. Si el modelo cita un ID que ninguna herramienta devolvió, el servidor lo detecta y descarta la respuesta. Detalles, pruebas y los errores que aparecieron en el camino: [`docs/guia/07-agente.md`](docs/guia/07-agente.md).
+
+```bash
+curl -X POST "$(terraform -chdir=infra output -raw agent_url)/ask" \
+  -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "¿Por qué bajó la calificación de los audífonos esta semana?"}'
+```
+
+El servicio es privado (sin credencial de Google responde 403), escala a cero y tiene un máximo de 2 instancias.
+
 ## Costos
 
-Sin procesos corriendo, la infraestructura cuesta prácticamente cero. El costo principal es Dataflow mientras procesa datos (del orden de USD 0,25–0,40 por hora con un worker), por eso se ejecuta solo durante las sesiones de prueba. `terraform destroy` deja el proyecto limpio y `terraform apply` lo vuelve a levantar. Una alerta de presupuesto opcional (`billing_account` en `terraform.tfvars`) avisa al 50%, 90% y 100% del monto definido.
+Sin procesos corriendo, la infraestructura cuesta prácticamente cero. El costo principal es Dataflow mientras procesa datos (del orden de USD 0,25–0,40 por hora con un worker), por eso se ejecuta solo durante las sesiones de prueba. `terraform destroy` deja el proyecto limpio y `terraform apply` lo vuelve a levantar. El agente en Cloud Run escala a cero y no cuesta nada en reposo; lo que consume es Gemini, centavos por cada cientos de preguntas. Una alerta de presupuesto opcional (`billing_account` en `terraform.tfvars`) avisa al 50%, 90% y 100% del monto definido.
 
 ## Estructura
 
@@ -120,6 +139,7 @@ sql/gold/             Búsqueda semántica y métricas diarias por producto
 sql/experiments/      Validación en SQL del camino alternativo (BigQuery subscription)
 agent/                Agente en Cloud Run: FastAPI, Gemini con function calling y las dos herramientas
 tests/                Tests del generador, del pipeline y del agente
+.github/workflows/    CI en cada PR (ruff, tests, terraform validate) y despliegue del agente en main
 docs/                 Decisiones de diseño (ADRs) y guía paso a paso
 ```
 
